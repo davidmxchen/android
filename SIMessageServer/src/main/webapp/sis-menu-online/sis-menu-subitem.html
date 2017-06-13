@@ -1,0 +1,134 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="sis-menu-selection.html">
+
+<dom-module id="sis-menu-subitem">
+    <style>
+    </style>
+    <template>         
+        <div>
+            <span>[[name]]</span><span>[[priceString]]</span>
+            <template is='dom-if' if='{[hasSelection}}'>
+                <sis-menu-selection is-sub-selection parent-item="[[subitem]]" selected-subitem="{{selectedSubitem}}" selection="{{selection}}"></sis-menu-selection>
+            </template>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'sis-menu-subitem', // this represent single menu item
+            properties: {
+                /**
+                 * The language used to display this item.
+                 */
+                language: {
+                    type: String,
+                    value: 'en',
+                    notify: true
+                },
+                /**
+                 * The content of this subitem, initialized outside by this upper host
+                 */
+                subitem: {
+                    type: Object,
+                    notify: true,
+                    observer: 'subItemChanged'
+                },
+                /**
+                 * The index of this subitem in the containing selection array, 
+                 * used for tracing of this subitem. initialized on create.
+                 */
+                itemIndex: {
+                    type: Number
+                },
+                /**
+                 * The display name for this subitem.
+                 */
+                name: {
+                    type: String
+                },
+                /**
+                 * The display price string for this item.
+                 */
+                priceString: {
+                    type: String
+                },
+                /**
+                 * If tis subitem contain price property, checked on initialization
+                 */
+                hasPrice: {
+                    type: Boolean,
+                    notify: true,
+                    computed: 'isPriceAvailable(subitem)'
+                },
+                /**
+                 * If this subitem contain selection property, initialized as the subitem available(not null)
+                 */
+                hasSelection: {
+                    type: Boolean,
+                    notify: true,
+                    computed: 'isSelectionAvailable(subitem)'
+                },
+                /**
+                 * The selection of this subitem, initialized as the subitem available, if there is no selection
+                 * for this item, an empty array is assigned to the selection
+                 */
+                selection: {
+                    type: Array,
+                    notify: true,
+                    computed: 'getSelection(subitem)'
+                },
+                /**
+                 * The selected subitem in the selection of this subitem, only available when there is selection
+                 * in this subitem, only set by user click of the selection UI
+                 */
+                selectedSubitem: {
+                    type: Object,
+                    notify: true,
+                    value: null
+                },
+                parentItem: {
+                    type: Object
+                }
+            }, // end of properties
+
+            /**
+             * initialize all properties on subitem available or change
+             */
+            subItemChanged: function(newItem, oldItem) {
+                this.name = newItem.name[this.language];
+                if (typeof newItem.price !== 'undefined')
+                    this.priceString = '---$' + newItem.price;
+                else
+                    this.priceString = '';
+            },
+            getSubitemName: function(language) {
+                return subitem.name[language];
+            },
+            getSubitemPrice: function() {
+                return subitem.price;
+            },
+            isSelectionAvailable: function(subitem) {
+                if (typeof subitem.selection !== 'undefined')
+                    return true;
+                else
+                    return false;
+            },
+            isPriceAvailable: function(subitem) {
+                if (typeof subitem.price !== 'undefined')
+                    return true;
+                else
+                    return false;
+            },
+            getSelection: function(subitem) {
+                if (typeof subitem.selection !== 'undefined') {
+                    this.message = "This subitem has selection: " + subitem.selection.length;
+                    return subitem.selection;
+                }
+                else {
+                    this.message = "This subitem has no selection";
+                    return [];
+                }
+            }
+        });
+    </script>  
+</dom-module>

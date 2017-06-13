@@ -1,0 +1,1133 @@
+{
+  "root": {
+    "businessInfo":{"name":"", "address":{"street":"", "city":"", "state":"", "zip":""}, "phone":"", "id":""},
+    "empty_item":{"name":{"en":"<--", "zh":"<=="}, "description":"", "price":""},
+    "ingredient":[{"name":"meats", "selection":[{"name":"pork"},{"name":"chicken"},{"name":"beef"}, {"name":"shrimp"},{"name":"seafood"}]},
+        {"name":"vegetables", "selection":[{"name":"vegetable"},{"name":"broccoli"},{"name":"snowpea"},{"name":"green pepper"},{"name":"pea"}]}, 
+        {"name":"spice", "selection":[{"name":"scallion"},{"name":"ginger"},{"name":"MSG"},{"name":"salt"},{"name":"soy sauce"},{"name":"starch"}]}],
+    "category": [
+        {   
+    
+        "name":{"en": "Shushi Lunch Combo", "zh":"Sushi Lunch"},
+        "description": "Choice of two or three rolls form list, comes with soup or salad",        
+        "selection":[{"name":{"en":"with", "zh":"汤类", "tw":"湯类"}, 
+                "selection":[
+            {"name":{"en":"soup", "zh":"汤", "tw":""}, "printer":"packing"},
+            {"name":{"en":"Salad", "zh":"酸辣汤", "tw":""}}]}    
+           ],
+        "item": [
+          {
+            "name": {
+              "en": "3R COMBO",
+              "zh": "Three Rolls Combo"
+            }, 
+            "price": "11.95",
+            "choice": {
+              "number": "3",
+              "item": [
+                {"name":{
+                  "en": "CAL R",
+                  "zh": "California Roll"
+                }},
+                {"name":{
+                  "en": "SAL R",
+                  "zh": "Salmon Roll"
+                }},
+                {"name":{
+                  "en": "TUNA R",
+                  "zh": "Tuna Roll"
+                }},
+                {"name":{
+                  "en": "SAL AVO R",
+                  "zh": "Salmon Avocado Roll"
+                }},
+                {"name":{
+                  "en": "TUNA AVO R",
+                  "zh": "Tuna Avocado Roll"
+                }},
+                {"name":{
+                  "en": "EEL AVO R",
+                  "zh": "Eel Avocado Roll"
+                }},
+                {"name":{
+                  "en": "CU R",
+                  "zh": "Cucumber Roll"
+                }},
+                {"name":{
+                  "en": "EEL R",
+                  "zh": "Eel Cucumber Roll"
+                }},
+                {"name":{
+                  "en": "Y TAIL R",
+                  "zh": "Yellow Tail Roll"
+                }},
+                {"name":{
+                  "en": "SPI TUNA R",
+                  "zh": "Spicy Tuna Roll"
+                }},
+                {"name":{
+                  "en": "SPI SAL R",
+                  "zh": "Spicy Salmon Roll"
+                }},
+                {"name":{
+                  "en": "SPI Y TAIL R",
+                  "zh": "Spicy Yellow Tail Roll"
+                }},
+                {"name":{
+                  "en": "SW Pot R",
+                  "zh": "Sweet Potato Roll",
+                  "sendto":"kitchen"
+                }},
+                {"name":{
+                  "en": "SH TEMP R(1SH)",
+                  "zh": "Shrimp Tempura Roll",
+                  "sendto":"kitchen"
+                }}]
+            }
+          },
+          {
+            "name": {
+              "en": "2R COMBO",
+              "zh": "Two Rolls Combo"
+            },  
+            "price": "8.95",
+            "choice": {
+              "number": "2",
+               "item": [
+                {"name":{
+                  "en": "CAL R",
+                  "zh": "California Roll"
+                }},
+                {"name":{
+                  "en": "SAL R",
+                  "zh": "Salmon Roll"
+                }},
+                {"name":{
+                  "en": "TUNA R",
+                  "zh": "Tuna Roll"
+                }},
+                {"name":{
+                  "en": "SAL AVO R",
+                  "zh": "Salmon Avocado Roll"
+                }},
+                {"name":{
+                  "en": "TUNA AVO R",
+                  "zh": "Tuna Avocado Roll"
+                }},
+                {"name":{
+                  "en": "EEL AVO R",
+                  "zh": "Eel Avocado Roll"
+                }},
+                {"name":{
+                  "en": "CU R",
+                  "zh": "Cucumber Roll"
+                }},
+                {"name":{
+                  "en": "EEL R",
+                  "zh": "Eel Cucumber Roll"
+                }},
+                {"name":{
+                  "en": "Y TAIL R",
+                  "zh": "Yellow Tail Roll"
+                }},
+                {"name":{
+                  "en": "SPI TUNA R",
+                  "zh": "Spicy Tuna Roll"
+                }},
+                {"name":{
+                  "en": "SPI SAL R",
+                  "zh": "Spicy Salmon Roll"
+                }},
+                {"name":{
+                  "en": "SPI Y TAIL R",
+                  "zh": "Spicy Yellow Tail Roll"
+                }},
+                {"name":{
+                  "en": "SW Pot R",
+                  "zh": "Sweet Potato Roll",
+                  "sendto":"kitchen"
+                }},
+                {"name":{
+                  "en": "SH TEMP R(1SH)",
+                  "zh": "Shrimp Tempura Roll",
+                  "sendto":"kitchen"
+                }}
+              ]
+            }
+          }
+    
+    
+ 
+    ]
+  
+        
+        },
+        
+      {
+        "name":{"en":"Lunch Combo", "zh":"汤类", "tw":"湯类"},
+        "description":{"en":"Lunch Combo comes with soup and fried rice", "zh":"", "tw":""},
+        "selection":[{"name":{"en":"soup", "zh":"汤类", "tw":"湯类"}, 
+                "selection":[
+            {"name":{"en":"wonton soup", "zh":"云吞汤", "tw":""}, "printer":"packing"},
+            {"name":{"en":"hot sour soup", "zh":"酸辣汤", "tw":""}},
+            {"price":"0.00","name":{"en":"Egg drop soup", "zh":"蛋花汤", "tw":""}},
+            {"price":".50","name":{"en":"Chicken rice soup", "zh":"鸡饭汤", "tw":""}},
+            {"price":".0","name":{"en":"clear soup", "zh":"净汤", "tw":""}}]},
+    
+            {"name":{"en":"Rice", "zh":"饭", "tw":""}, "selection":[
+                    {"price":"","name":{"en":"pork fried rice", "zh":"叉饭"}},
+                    {"price":"1.00","name":{"en":"chicken fried rice", "zh":"鸡炒饭"}},
+                    {"price":"2.00","name":{"en":"shrimp fried rice", "zh":"虾炒饭"}},
+                    {"price":"2.50","name":{"en":"house special fried rice", "zh":"本楼炒饭"}}
+                    ]}],
+            "sub_category":[{"name":{"en":"Chicken", "zh":""}}, {"name":{"en":"vegetable", "zh":""}}, {"name":{"en":"shrimp", "zh":""}}],
+        "item": [
+          {
+            "name":{"en":"Samba Chicken", "zh":""},
+            "sub_category":[{"name":{"en":"Chicken", "zh":"汤"}}, {"name":{"en":"vegetable", "zh":"蔬菜"}}],
+            "description": "Spicy and sour herbs in lemongrass broth, mushroom, tomatos, bamboo shoot, pineapple, red bell pepper and scallion",
+            "price":"8.95",
+            "send_to":{"en":["Printer 1", "Printer 2", "Chef's Kitchen"], "zh":["Sushi Bar", "Printer 3"]}            
+          },
+          {
+            "name":{"en":"Garlic Chicken", "zh":""},
+            "sub_category":[{"name":{"en":"Chicken", "zh":"汤"}}, {"name":{"en":"vegetable", "zh":"蔬菜"}}],
+            "description": "Spicy and sour herbs in lemongrass broth, mushroom, tomatos, bamboo shoot, pineapple, red bell pepper and scallion",
+            "price":"8.95",
+            "send_to":{"en":["Printer 1", "Printer 2", "Chef's Kitchen"], "zh":["Sushi Bar", "Printer 3"]}            
+          },
+          {
+            "name":{"en":"Samba Shrimp", "zh":""},
+            "sub_category":[{"name":{"en":"Shrimp", "zh":""}}],
+            "price":"8.95",
+            "description": "Spicy and sour herbs in lemongrass broth, mushroom, tomatos, bamboo shoot, pineapple, red bell pepper and scallion",
+            "send_to":{"en":["Printer 1", "Printer 2", "Chef's Kitchen"], "zh":["Sushi Bar", "Printer 3"]}            
+          },
+          {
+            "name":{"en":"Garlic Shrimp", "zh":""},
+            "sub_category":[{"name":{"en":"Shrimp", "zh":""}}],
+            "price":"8.95",
+            "description": "Spicy and sour herbs in lemongrass broth, mushroom, tomatos, bamboo shoot, pineapple, red bell pepper and scallion",
+            "send_to":{"en":["Printer 1", "Printer 2", "Chef's Kitchen"], "zh":["Sushi Bar", "Printer 3"]}            
+          },
+          {
+            "name": {
+              "en": "Subgram Wonton",
+              "zh": ""
+            },
+            "price":"8.95",
+            "description": "Ground shrimp and pork wrapped in wonton skin cooked with chicken broth",
+            "sub_category":[{"name":{"en":"Shrimp", "zh":"汤"}}, {"name":{"en":"vegetable", "zh":"蔬菜"}}]
+          },
+          {
+            "name": {
+              "en": "Sweet Sour Chicken",
+              "zh": "酸辣汤"
+            },
+            "sub_category":[{"name":{"en":"Chicken", "zh":"汤"}}]                      
+          },
+          {
+            "name": {
+              "en": "Vegetable Delight",
+              "zh": "Miso 汤"
+            },
+            "sub_category":[{"name":{"en":"vegetable", "zh":"蔬菜"}}]
+          },
+          {
+            "name": {
+              "en": "Vegetable Tofu",
+              "zh": "蔬菜汤"
+            },
+            "sub_category":[{"name":{"en":"vegetable", "zh":"蔬菜"}}],
+            
+            "description": "Roasted veggie and fresh tufo cooked in clear broth with bean thread noodles",
+            "selection": [
+              {
+                "name": {"en":"Spicy", "zh":"大"},
+                "price": "4.95"
+              },
+              {
+                "name": {"en":"No Spicy", "zh":"小"},
+                "price": "4.50"
+              }
+            ]
+          },
+          {
+            "name": {
+              "en": "Chicken/Shrimp Vegetable",
+              "zh": "Chicken Tom Kha Gai"
+            },
+            "description": "Chicken in herb of galanca in coconut broth with mushroom and onion",
+            "sub_category":[{"name":{"en":"Shrimp", "zh":"蔬菜"}}, {"name":{"en":"Chicken", "zh":"蔬菜"}}]
+          }
+        ]
+      },
+      {
+        "name": {"en":"Appetizer", "zh":"头台"},
+        "item": [
+          {
+            "name": {"en": "Spring R(2)", "zh": "上海卷(2)"},
+            "description": "Lettuce, carrots, mint, cucumber, bean sprouts, rice noodle fresh rolled with rice paper, served with sweet sour sauce",
+            "selection": [
+              {
+                "name": {"en":"Vegetable", "zh":"蔬菜"},
+                "price": "4.95"
+              },
+              {
+                "name": {"en":"Tofu", "zh":"豆腐"},
+                "price": "4.95"
+              },
+              {
+                "name": {"en":"Chicken", "zh":"鸡肉"},
+                "price": "4.95"
+              },
+              {
+                "name": {"en":"Shrimp", "zh":"虾"},
+                "price": "5.95"
+              }
+            ]
+          },
+          {
+            "name": {
+              "en": "CR Thai R(2)",
+              "zh": "脆皮泰卷 (2)"
+            },
+            "description": "Carrots, cabbage, black mushroom, celery, onion, clear noddles",
+            "price": "3.95"
+          },
+          {
+            "name": {
+              "en": "Fr. Sp R(3)",
+              "zh": "Fried Spring Rolls(3)"
+            },
+            "description": "Seasoned shrimp, ground chicken, black mushroom, carrots, clear noodles, wrapped in rice paper, served with sweet sour sauce",
+            "price": "4.95"
+          },
+          {
+            "name": {
+              "en": "Vt Egg R(3)",
+              "zh": "越南蛋卷 (3)"
+            },
+            "description": "Ground pork and shrimp flavored and mixed with carrots, black mushroom and clear noddle",
+            "price": "4.95"
+          },
+          {
+            "name": {
+              "en": "CR Rag(6)",
+              "zh": "蟹角 (6)"
+            },
+            "description": "Crab meat with cream cheese wrapped in crispy wonton skins, served with sweet sour sauce",
+            "price": "5.95"
+          },
+          {
+            "name": {
+              "en": "Dumpling(6)",
+              "zh": "水饺(6)"
+            },
+            "description": "Homemade dumpling dough stuffed with marinated ground pork, served with ginger sauce",
+            "price": "3.95",
+            "selection": [
+              { "name": {"en":"Fried", "zh":"锅贴"} },
+              { "name": {"en":"Steamed", "zh":"水饺"} }
+            ]
+          },
+          {
+            "name": {
+              "en": "Thai Chicken Wings(8)",
+              "zh": "泰鸡翅 (8)"
+            },
+            "description": "Marinated Thai style style and deep fried till skin golden crispy, served with sweet sour sauce",
+            "price": "5.50"
+          },
+          {
+            "name": {
+              "en": "Satay (4)",
+              "zh": "沙爹(4)"
+            },
+            "description": "Chicken tender or beef slices marinated in coconut milk, herbs and spices, curry sauce, served with peanut sauce",
+            "price": "6.75",
+            "selection": [
+              { "name": {"en":"Chicken", "zh":"鸡"} },
+              { "name": {"en":"Beef", "zh":"牛"} }
+            ]
+          },
+          {
+            "name": {
+              "en": "Vegetable Tempura",
+              "zh": "蔬菜甜不辣"
+            },
+            "price": "5.95"
+          },
+          {
+            "name": {
+              "en": "Chicken Tempura",
+              "zh": "鸡甜不辣"
+            },
+            "price": "6.50"
+          },
+          {
+            "name": {
+              "en": "Shrimp Tempura",
+              "zh": "虾甜不辣"
+            },
+            "description": "Shrimp breaded in Thai tempura batter then deep fried crispy, served with sweet sour sauce",
+            "kitchen": "Chef's Kitchen",
+            "price": "6.95"
+          },
+          {
+            "name": {
+              "en": "Squid Tempura",
+              "zh": "鱿鱼甜不辣"
+            },
+            "description": "Squid breaded in Thai tempura batter then deep fried crispy, served with sweet sour sauce",
+            "price": "6.95"
+          },
+          {
+            "name": {
+              "en": "Bangkok Platter",
+              "zh": "曼谷拼盘"
+            },
+            "description": "Thai roll, wings, chicken and beef satay, crab rangoon, shrimp and chicken tempura, BBQ pork",
+            "selection": [
+              {
+                "name": {"en":"For One", "zh":"一位"},
+                "price": "8.50"
+              },
+              {
+                "name": {"en":"For Two", "zh":"二位"},
+                "price": "16.95"
+              }
+            ]
+          }
+        ]
+      },
+      {"name":{"en":"Lunch Special", "zh":"午餐"}, 
+             "description":"served with soup and fried rice",
+             "item":[
+                 {"price":"5.95",
+                     "description":"",
+                     "name":{"en":"Chicken w. Broc", "zh":"芥兰鸡"},
+                     "selection":[
+                         {
+                             "name":{"en":"Wonton Soup", "zh":"云吞汤"},
+                             "selection":[
+                                 {"name":{"en":"pork fried rice", "zh":"叉饭"}},
+                                 {"name":{"en":"chicken fried rice", "zh":"鸡饭"}},
+                                 {"name":{"en":"shrimp fried rice", "zh":"虾饭"}, "price":"1.00"}
+                                 ]
+                         },
+                             {
+                                 "name":{"en":"Egg Drop Soup", "zh":"蛋花汤"},
+                                 "selection":[
+                                 {"name":{"en":"pork fried rice", "zh":"叉饭"}},
+                                 {"name":{"en":"chicken fried rice", "zh":"鸡饭"}},
+                                 {"name":{"en":"shrimp fried rice", "zh":"虾饭"}, "price":"1.00"}
+                                 ]
+                             },
+                             {
+                                 "name":{"en":"Hot Sour Soup", "zh":"酸辣汤"},
+                                 "selection":[
+                                     {"name":{"en":"pork fried rice", "zh":"叉饭"}},
+                                     {"name":{"en":"chicken fried rice", "zh":"鸡饭"}},
+                                     {"name":{"en":"shrimp fried rice", "zh":"虾饭"}, "price":"1.00"}
+                                  ]
+                             }
+                           ]
+                     }
+                 ]
+         },
+      
+      {
+        "name": {"en":"Dinner Special", "zh":"晚餐"},
+        "description": "Served Daily until 3:30pm. All dishes come with appetizer and soup of the day, stir fry and curry. come with white or brown rice",
+        "item": [
+          {
+            "name": {
+              "en": "Thai Curry",
+              "zh": "泰咖喱"
+            },
+            "selection": [
+              {
+                "name": {"en":"Red Curry", "zh":"红咖喱"},
+                "description": "Red bell pepper, basil leaves, bamboo shoots, carrots, tomato, pineapple",
+                "selection": [
+                  {
+                    "name": {"en":"Vegetable", "zh":"蔬菜"},
+                    "price": "6.95"
+                  },
+                  {
+                    "name": {"en":"Tofu", "zh":"豆腐"},
+                    "price": "6.95"
+                  },
+                  {
+                    "name": {"en":"Flank Steak", "zh":"牛排"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Pork", "zh":"肉"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Chicken", "zh":"鸡"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Shrimp", "zh":"虾"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Scallop", "zh":"干贝"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Caramari", "zh":"鱿鱼"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Mussel", "zh":"鲜贝"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Seafood", "zh":"海鲜"},
+                    "price": "8.95"
+                  }
+                ]
+              },
+              {
+                "name": {"en":"Green Curry", "zh":"绿咖喱"},
+                "description": "Green bell pepper, basil leaves, snow peas, broccoli, string bean and bamboo shoot",
+                "selection": [
+                  {
+                    "name": {"en":"Vegetable", "zh":"蔬菜"},
+                    "price": "6.95"
+                  },
+                  {
+                    "name": {"en":"Tofu", "zh":"豆腐"},
+                    "price": "6.95"
+                  },
+                  {
+                    "name": {"en":"Flank Steak", "zh":"牛排"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Pork", "zh":"肉"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Chicken", "zh":"鸡"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Shrimp", "zh":"虾"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Scapplo", "zh":"干贝"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Caramari", "zh":"鱿鱼"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Mussel", "zh":"鲜贝"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Seafood", "zh":"海鲜"},
+                    "price": "8.95"
+                  }
+                ]
+              },
+              {
+                "name": {"en":"Masaman Curry", "zh":"Masaman 咖喱"},
+                "description": "Pineapple, onion, potato, carrot, bamboo shoots, basil leaves, chopped peanut",
+                "selection": [
+                  {
+                    "name": {"en":"Vegetable", "zh":"蔬菜"},
+                    "price": "6.95"
+                  },
+                  {
+                    "name": {"en":"Tofu", "zh":"豆腐"},
+                    "price": "6.95"
+                  },
+                  {
+                    "name": {"en":"Flank Steak", "zh":"牛排"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Pork", "zh":"肉"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Chicken", "zh":"鸡"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Shrimp", "zh":"虾"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Scapplo", "zh":"干贝"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Caramari", "zh":"鱿鱼"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Mussel", "zh":"鲜贝"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Seafood", "zh":"海鲜"},
+                    "price": "8.95"
+                  }
+                ]
+              },
+              {
+                "name": {"en":"Panang Curry", "zh":"Panang咖喱"},
+                "description": "Pineapple, red pepper, snow peas, bamboo shoot, carrot, basil leaves",
+                "selection": [
+                  {
+                    "name": {"en":"Vegetable", "zh":"蔬菜"},
+                    "price": "6.95"
+                  },
+                  {
+                    "name": {"en":"Tofu", "zh":"豆腐"},
+                    "price": "6.95"
+                  },
+                  {
+                    "name": {"en":"Flank Steak", "zh":"牛排"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Pork", "zh":"肉"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Chicken", "zh":"鸡"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Shrimp", "zh":"虾"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Scapplo", "zh":"干贝"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Caramari", "zh":"鱿鱼"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Mussel", "zh":"鲜贝"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Seafood", "zh":"海鲜"},
+                    "price": "8.95"
+                  }
+                ]
+              },
+           {
+            "name": {
+              "en": "Rice and Noodle",
+              "zh": "米粉"
+            },
+            "selection": [
+              {
+                "name": {"en":"Famous Pad Thai","zh":"泰米粉"},
+                "description": "Rice noodle, egg, bean sprouts, scallions, ground peanut in Pad Thai sauce",
+                "selection": [
+                   {
+                    "name": {"en":"Vegetable", "zh":"蔬菜"},
+                    "price": "6.95"
+                  },
+                  {
+                    "name": {"en":"Tofu", "zh":"豆腐"},
+                    "price": "6.95"
+                  },
+                  {
+                    "name": {"en":"Flank Steak", "zh":"牛排"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Pork", "zh":"肉"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Chicken", "zh":"鸡"},
+                    "price": "7.25"
+                  },
+                  {
+                    "name": {"en":"Shrimp", "zh":"虾"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Scapplo", "zh":"干贝"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Caramari", "zh":"鱿鱼"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Mussel", "zh":"鲜贝"},
+                    "price": "7.95"
+                  },
+                  {
+                    "name": {"en":"Seafood", "zh":"海鲜"},
+                    "price": "8.95"
+                  }
+                ]
+              }]} 
+            ]}
+        ]},
+    
+           
+            {
+                "name":{"en":"Wok Grill Platter", "zh":"炒锅类", "tw":""},
+                "description":"comes with soup and fried rice",
+                "selection":[
+                    {"name":{"en":"soup", "zh":"汤类", "tw":"湯类"}, 
+                    "selection":[
+                        {"name":{"en":"wonton soup", "zh":"云吞汤", "tw":""}, "printer":"packing"},
+                        {"name":{"en":"hot sour soup", "zh":"酸辣汤", "tw":""}},
+                        {"price":"0.00","name":{"en":"Egg drop soup", "zh":"蛋花汤", "tw":""}},
+                        {"price":".50","name":{"en":"Chicken rice soup", "zh":"鸡饭汤", "tw":""}},
+                        {"price":".0","name":{"en":"clear soup", "zh":"净汤", "tw":""}}
+                        ]},
+                    {"name":{"en":"Fried Rice", "zh":"炒饭", "tw":""}, 
+                     "selection":[
+                        {"price":"","name":{"en":"pork fried rice", "zh":"叉烧炒饭"}},
+                        {"price":"1.00","name":{"en":"chicken fried rice", "zh":"鸡炒饭"}},
+                        {"price":"2.00","name":{"en":"shrimp fried rice", "zh":"虾炒饭"}},
+                        {"price":"2.50","name":{"en":"house special fried rice", "zh":"本楼炒饭"}}
+                        ]}
+                    ],
+              
+                "item":[            
+                    {"name":{"en":"Wok Grill Garlic Shrimp", "zh":"蒜蓉虾", "tw":""}}, 
+                    {"name":{"en":"Sesame Chicken", "zh":"芝麻鸡", "tw":""}},    
+                    {"name":{"en":"General Tso's Chicken", "zh":"佐宗鸡", "tw":""}},
+                    {"name":{"en":"Mango Chicken", "zh":"芒果鸡", "tw":""}},
+                    {"name":{"en":"Mango Shrimp", "zh":"芒果虾", "tw":""}},
+                    {"name":{"en":"Basil Chicken", "zh":"九层鸡", "tw":""}},
+                    {"name":{"en":"Basil Beef", "zh":"九层牛", "tw":""}},
+                    {"name":{"en":"Curry Chicken", "zh":"咖哩鸡", "tw":""}},
+                    {"name":{"en":"Curry Beef", "zh":"咖哩牛", "tw":""}}
+                ]
+          },
+          {
+                "name": {"en": "Lunch Box","zh": "Lunch Box" },
+                "description": "Served w Miso Soup or Salad, Shumai, California Roll & White Rice",
+                "selection":[
+                        {"name":{"en":"Miso Soup", "zh":"Miso Soup", "tw":""}},
+                        {"name":{"en":"Salad", "zh":"Salad", "tw":""}}
+                ],
+                "item": [            
+                    {"name":{"en":"Chicken Teriyaki", "zh":"烤鸡", "tw":""}}, 
+                    {"name":{"en":"Salmon Teriyaki", "zh":"烤三文鱼", "tw":""}},    
+                    {"name":{"en":"Beef Teriyaki", "zh":"烤牛排", "tw":""},
+                        "selection":[
+                            {
+                                "name":{"en":"Rare","zh":"三成熟"}
+                            },
+                            {
+                                "name":{"en":"Medium", "zh":"六成熟"}
+                            },
+                            {
+                                "name":{"en":"Well Done", "zh":"全熟"}
+                            },
+                            {
+                                "name":{"en":"Rare Medium", "zh":"四五成熟"}
+                            },
+                            {
+                                "name":{"en":"Medium Well", "zh":"八成熟"}
+                            }
+                        ]},
+                    {"name":{"en":"Shrimp Teriyaki", "zh":"烤虾", "tw":""}}
+                ]
+          },
+          {
+                "name": {"en": "Sushi Bar","zh": "Sushi Bar" },
+                "description": "Served w Miso Soup or Salad",
+                "selection":[
+                            {"name":{"en":"Miso Soup", "zh":"Miso Soup", "tw":""}},
+                            {"name":{"en":"Salad", "zh":"Salad", "tw":""}}
+                    ],
+                "item": [            
+                    {"name":{"en":"Sushi Lunch", "zh":"Sushi Lunch", "tw":""}}, 
+                    {"name":{"en":"Sashimi Lunch", "zh":"Sashimi Lunch", "tw":""}},    
+                    {"name":{"en":"Sushi & Sashimi Lunch", "zh":"Sushi & Sashimi Lunch", "tw":""}}
+                ]
+          },
+          {
+            "name": {"en": "Calssic Rolls","zh": "Calssic Rolls" },
+            "description": "Served w Miso Soup or Salad",
+            "selection":[
+                        {"name":{"en":"Miso Soup", "zh":"Miso Soup", "tw":""}},
+                        {"name":{"en":"Salad", "zh":"Salad", "tw":""}}
+                ],
+            "item": [            
+                {
+                "name": {
+                  "en": "3R COMBO",
+                  "zh": "Three Rolls Combo"
+                }, 
+                "price": "11.95",
+                "choice": {
+                  "number": "3",
+                  "item": [
+                    {"name":{
+                      "en": "CAL R",
+                      "zh": "California Roll"
+                    }},
+                    {"name":{
+                      "en": "SAL R",
+                      "zh": "Salmon Roll"
+                    }},
+                    {"name":{
+                      "en": "TUNA R",
+                      "zh": "Tuna Roll"
+                    }},
+                    {"name":{
+                      "en": "SAL AVO R",
+                      "zh": "Salmon Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "TUNA AVO R",
+                      "zh": "Tuna Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "EEL AVO R",
+                      "zh": "Eel Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "CU R",
+                      "zh": "Cucumber Roll"
+                    }},
+                    {"name":{
+                      "en": "EEL R",
+                      "zh": "Eel Cucumber Roll"
+                    }},
+                    {"name":{
+                      "en": "Y TAIL R",
+                      "zh": "Yellow Tail Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI TUNA R",
+                      "zh": "Spicy Tuna Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI SAL R",
+                      "zh": "Spicy Salmon Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI Y TAIL R",
+                      "zh": "Spicy Yellow Tail Roll"
+                    }},
+                    {"name":{
+                      "en": "SW Pot R",
+                      "zh": "Sweet Potato Roll",
+                      "sendto":"kitchen"
+                    }},
+                    {"name":{
+                      "en": "SH TEMP R(1SH)",
+                      "zh": "Shrimp Tempura Roll",
+                      "sendto":"kitchen"
+                    }}]
+                }
+              },
+              {
+                "name": {
+                  "en": "2R COMBO",
+                  "zh": "Two Rolls Combo"
+                },  
+                "price": "8.95",
+                "choice": {
+                  "number": "2",
+                   "item": [
+                    {"name":{
+                      "en": "CAL R",
+                      "zh": "California Roll"
+                    }},
+                    {"name":{
+                      "en": "SAL R",
+                      "zh": "Salmon Roll"
+                    }},
+                    {"name":{
+                      "en": "TUNA R",
+                      "zh": "Tuna Roll"
+                    }},
+                    {"name":{
+                      "en": "SAL AVO R",
+                      "zh": "Salmon Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "TUNA AVO R",
+                      "zh": "Tuna Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "EEL AVO R",
+                      "zh": "Eel Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "CU R",
+                      "zh": "Cucumber Roll"
+                    }},
+                    {"name":{
+                      "en": "EEL R",
+                      "zh": "Eel Cucumber Roll"
+                    }},
+                    {"name":{
+                      "en": "Y TAIL R",
+                      "zh": "Yellow Tail Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI TUNA R",
+                      "zh": "Spicy Tuna Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI SAL R",
+                      "zh": "Spicy Salmon Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI Y TAIL R",
+                      "zh": "Spicy Yellow Tail Roll"
+                    }},
+                    {"name":{
+                      "en": "SW Pot R",
+                      "zh": "Sweet Potato Roll",
+                      "sendto":"kitchen"
+                    }},
+                    {"name":{
+                      "en": "SH TEMP R(1SH)",
+                      "zh": "Shrimp Tempura Roll",
+                      "sendto":"kitchen"
+                    }}
+                  ]
+                }
+              }
+            ]
+          },
+    
+        {
+            "name":{"en":"Lunch Specail", "zh":"testing-sub-cn"},
+            "description":"Monday ~ Saturday 11:30am ~ 3:00pm",
+            "group_category": [        
+            {
+                "name":{"en":"Wok Grill Platter", "zh":"", "tw":""},
+                "description":"comes with soup and fried rice",
+                "selection":[
+                    {"name":{"en":"soup", "zh":"汤类", "tw":"湯类"}, 
+                    "selection":[
+                        {"name":{"en":"wonton soup", "zh":"云吞汤", "tw":""}, "printer":"packing"},
+                        {"name":{"en":"hot sour soup", "zh":"酸辣汤", "tw":""}},
+                        {"price":"0.00","name":{"en":"Egg drop soup", "zh":"蛋花汤", "tw":""}},
+                        {"price":".50","name":{"en":"Chicken rice soup", "zh":"鸡饭汤", "tw":""}},
+                        {"price":".0","name":{"en":"clear soup", "zh":"净汤", "tw":""}}
+                        ]},
+                    {"name":{"en":"Rice", "zh":"饭", "tw":""}, 
+                     "selection":[
+                        {"price":"","name":{"en":"pork fried rice", "zh":"叉饭"}},
+                        {"price":"1.00","name":{"en":"chicken fried rice", "zh":"鸡炒饭"}},
+                        {"price":"2.00","name":{"en":"shrimp fried rice", "zh":"虾炒饭"}},
+                        {"price":"2.50","name":{"en":"house special fried rice", "zh":"本楼炒饭"}}
+                        ]}
+                    ],
+              
+                "item":[            
+                    {"name":{"en":"Wok Grill Garlic Shrimp", "zh":"", "tw":""}}, 
+                    {"name":{"en":"Sesame Chicken", "zh":"", "tw":""}},    
+                    {"name":{"en":"General Tso's Chicken", "zh":"", "tw":""}},
+                    {"name":{"en":"Mango Chicken", "zh":"", "tw":""}},
+                    {"name":{"en":"Mango Shrimp", "zh":"", "tw":""}},
+                    {"name":{"en":"Basil Chicken", "zh":"", "tw":""}},
+                    {"name":{"en":"Basil Beef", "zh":"", "tw":""}},
+                    {"name":{"en":"Curry Chicken", "zh":"", "tw":""}},
+                    {"name":{"en":"Curry Beef", "zh":"", "tw":""}}
+                ]
+          },
+          {
+                "name": {"en": "Lunch Box","zh": "" },
+                "description": "Served w Miso Soup or Salad, Shumai, California Roll & White Rice",
+                "selection":[
+                        {"name":{"en":"Miso Soup", "zh":"", "tw":""}},
+                        {"name":{"en":"Salad", "zh":"", "tw":""}}
+                ],
+                "item": [            
+                    {"name":{"en":"Chicken Teriyaki", "zh":"", "tw":""}}, 
+                    {"name":{"en":"Salmon Teriyaki", "zh":"", "tw":""}},    
+                    {"name":{"en":"Beef Teriyaki", "zh":"", "tw":""}},
+                    {"name":{"en":"Shrimp Teriyaki", "zh":"", "tw":""}}
+                ]
+          },
+          {
+                "name": {"en": "Sushi Bar","zh": "" },
+                "description": "Served w Miso Soup or Salad",
+                "selection":[
+                            {"name":{"en":"Miso Soup", "zh":"", "tw":""}},
+                            {"name":{"en":"Salad", "zh":"", "tw":""}}
+                    ],
+                "item": [            
+                    {"name":{"en":"Sushi Lunch", "zh":"", "tw":""}}, 
+                    {"name":{"en":"Sashimi Lunch", "zh":"", "tw":""}},    
+                    {"name":{"en":"Sushi & Sashimi Lunch", "zh":"", "tw":""}}
+                ]
+          },
+          {
+            "name": {"en": "Calssic Rolls","zh": "" },
+            "description": "Served w Miso Soup or Salad",
+            "selection":[
+                        {"name":{"en":"Miso Soup", "zh":"", "tw":""}},
+                        {"name":{"en":"Salad", "zh":"", "tw":""}}
+                ],
+            "item": [            
+                {
+                "name": {
+                  "en": "3R COMBO",
+                  "zh": "Three Rolls Combo"
+                }, 
+                "price": "11.95",
+                "choice": {
+                  "number": "3",
+                  "item": [
+                    {"name":{
+                      "en": "CAL R",
+                      "zh": "California Roll"
+                    }},
+                    {"name":{
+                      "en": "SAL R",
+                      "zh": "Salmon Roll"
+                    }},
+                    {"name":{
+                      "en": "TUNA R",
+                      "zh": "Tuna Roll"
+                    }},
+                    {"name":{
+                      "en": "SAL AVO R",
+                      "zh": "Salmon Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "TUNA AVO R",
+                      "zh": "Tuna Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "EEL AVO R",
+                      "zh": "Eel Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "CU R",
+                      "zh": "Cucumber Roll"
+                    }},
+                    {"name":{
+                      "en": "EEL R",
+                      "zh": "Eel Cucumber Roll"
+                    }},
+                    {"name":{
+                      "en": "Y TAIL R",
+                      "zh": "Yellow Tail Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI TUNA R",
+                      "zh": "Spicy Tuna Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI SAL R",
+                      "zh": "Spicy Salmon Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI Y TAIL R",
+                      "zh": "Spicy Yellow Tail Roll"
+                    }},
+                    {"name":{
+                      "en": "SW Pot R",
+                      "zh": "Sweet Potato Roll",
+                      "sendto":"kitchen"
+                    }},
+                    {"name":{
+                      "en": "SH TEMP R(1SH)",
+                      "zh": "Shrimp Tempura Roll",
+                      "sendto":"kitchen"
+                    }}]
+                }
+              },
+              {
+                "name": {
+                  "en": "2R COMBO",
+                  "zh": "Two Rolls Combo"
+                },  
+                "price": "8.95",
+                "choice": {
+                  "number": "2",
+                   "item": [
+                    {"name":{
+                      "en": "CAL R",
+                      "zh": "California Roll"
+                    }},
+                    {"name":{
+                      "en": "SAL R",
+                      "zh": "Salmon Roll"
+                    }},
+                    {"name":{
+                      "en": "TUNA R",
+                      "zh": "Tuna Roll"
+                    }},
+                    {"name":{
+                      "en": "SAL AVO R",
+                      "zh": "Salmon Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "TUNA AVO R",
+                      "zh": "Tuna Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "EEL AVO R",
+                      "zh": "Eel Avocado Roll"
+                    }},
+                    {"name":{
+                      "en": "CU R",
+                      "zh": "Cucumber Roll"
+                    }},
+                    {"name":{
+                      "en": "EEL R",
+                      "zh": "Eel Cucumber Roll"
+                    }},
+                    {"name":{
+                      "en": "Y TAIL R",
+                      "zh": "Yellow Tail Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI TUNA R",
+                      "zh": "Spicy Tuna Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI SAL R",
+                      "zh": "Spicy Salmon Roll"
+                    }},
+                    {"name":{
+                      "en": "SPI Y TAIL R",
+                      "zh": "Spicy Yellow Tail Roll"
+                    }},
+                    {"name":{
+                      "en": "SW Pot R",
+                      "zh": "Sweet Potato Roll",
+                      "sendto":"kitchen"
+                    }},
+                    {"name":{
+                      "en": "SH TEMP R(1SH)",
+                      "zh": "Shrimp Tempura Roll",
+                      "sendto":"kitchen"
+                    }}
+                  ]
+                }
+              }
+            ]
+          }] 
+ 
+        }]
+  }
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Message Test Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body> 
+    <h1>Welcome to SI_Web message service</h1>
+     <div id="output"></div>    
+     <table>
+        <tr>
+            <td>
+                <canvas id="myCanvas" width="150" height="150" style="border:1px solid #000000;"></canvas>
+            </td>
+            <td>
+                <form name="inputForm">
+                    <table>
+
+                        <tr>
+                            <th>Color</th>
+                            <td><input type="radio" name="color" value="#FF0000" checked>Red</td>
+                            <td><input type="radio" name="color" value="#0000FF">Blue</td>
+                            <td><input type="radio" name="color" value="#FF9900">Orange</td>
+                            <td><input type="radio" name="color" value="#33CC33">Green</td>
+                        </tr>
+
+                        <tr> 
+                            <th>Shape</th>
+                            <td><input type="radio" name="shape" value="square" checked>Square</td>
+                            <td><input type="radio" name="shape" value="circle">Circle</td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+
+                    </table> 
+
+                </form>
+            </td>
+        </tr>
+    </table>
+    <script type="text/javascript" src="js/websocket.js"></script>
+    <script type="text/javascript" src="js/whiteboard.js"></script>
+</body> 
+</html>

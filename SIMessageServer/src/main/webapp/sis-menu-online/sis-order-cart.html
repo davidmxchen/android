@@ -1,0 +1,262 @@
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+ 
+    <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+    <link rel="import" href="../bower_components/paper-item/paper-item.html">
+    <link rel="import" href="../bower_components/paper-button/paper-button.html">
+    <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+    <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+    <link rel="import" href="../bower_components/paper-button/paper-button.html">
+    
+  <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+  <link rel="import" href="../bower_components/paper-menu/paper-submenu.html">
+    
+    <link rel="import" href="sis-menu-selection.html">
+    <link rel="import" href="sis-menu-choice.html">
+    <link rel="import" href="sis-paper-menu.html">
+    <link rel="import" href="sis-order-item.html">
+ 
+ <dom-module id="sis-order-cart">
+     <style>
+         :host {
+             
+         }
+     .menu-trigger {
+         display: block;
+         padding: 2px;
+         margin:5px;
+         height: 25px;
+         background-color: grey;  
+     }
+     paper-item {
+      --paper-item: {
+        cursor: pointer;
+      };
+    }
+
+    .sublist {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    </style>
+
+     <template>  
+         <iron-ajax
+             auto 
+             method="POST"
+            url="http://localhost:8080/SIMessageServer/OrderProcessServlet"
+            params="[[parameters]]" 
+            handle-as="json"  
+            last-response="{{serverResponse}}">                            
+          </iron-ajax>
+         <paper-menu>
+             <paper-item>Your Order:</paper-item>
+             <template is="dom-repeat" items="[[orderItems]]" as="orderItem">
+                     <sis-order-item order-item="[[orderItem]]"></sis-order-item>
+                     
+                 <!--paper-item>
+                     <span>[[orderItem.item.name.en]]</span>
+                     <span>[[orderItem.selection.name.en]]</span>
+                     <span>[[orderItem.selection.selection.name.en]]</span>
+                     <span>[[orderItem.item.price]]</span>
+                 </paper-item-->
+             </template> 
+             <paper-item><span>Total:</span><span>[[totalAmount]]</span></paper-item>
+         </paper-menu>  
+         <paper-button raised on-tap="resetOrder">reset</paper-button>
+         <paper-button raised on-tap="submitOrder">Submit Order</paper-button>
+     </template>
+     <script>
+          Polymer({
+            is: 'sis-order-cart', // this represent single menu item
+            properties: {
+                /**
+                 * The language used to display this item.
+                 */
+                language: {
+                    type: String,
+                    value: 'en',
+                    notify: true
+                },
+                cart: {
+                    type: Object,
+                    notify: true
+                },
+                /**
+                 * Orders user has selected added to the orderItem, user may also delete item(s) from it
+                 */
+                orderItems: {
+                    type: Array,
+                    notify: true
+                },
+                /**
+                 * TaxRate of the user's area, by percentage
+                 */
+                taxRate: {
+                    type: Number,
+                    vale: 0.00
+                },
+                /**
+                 * Total amount of the order
+                 */
+                totalAmount: {
+                    type: Number,
+                    value: 0.00,
+                    notify: true
+                },
+                /**
+                 * Discount of the order by amount
+                 */
+                discountAmount:{
+                    type: Number,
+                    value: 0.00
+                },
+                discountPercent:{
+                    type: Number,
+                    value: 0.00
+                },  
+                /**
+                 * Parameters contain order info to be sent to server
+                 */
+                parameters: {
+                    type: Object,
+                    notify: true
+                },
+                
+                trigger: {
+                    type: Boolean,
+                    value: false
+                },
+                
+                serverResponse: {
+                    type: Object,
+                    notify: true,
+                    observer: 'responseReceived'
+                }
+      
+                /**
+                 * The index of this item in the containing selection array, 
+                 * used for tracing of this item. initialized on _has.
+                 
+                itemIndex: {
+                  type: Number
+                }
+             */
+            },  // end of properties
+            observers: ['itemChanged(orderItems.splices)'],
+            
+            itemChanged: function(changeRecord) {
+                console.log(this.orderItems);
+                
+                //do stupid way first
+                var totalAmt = new Number('0.00');
+                for(var i=0; i<this.orderItems.length; i++){
+                    if(this.orderItems[i].price === "") // apply only to price not set
+                        totalAmt += this.getItemPrice(this.orderItems[i]);
+                    else
+                        totalAmt += new Number(this.orderItems[i].price);
+                    console.log("totalAmount=" + totalAmt);
+                }
+                
+                this.set('totalAmount', new Number(totalAmt.toFixed(2)));
+               // console.log(changeRecord);
+               /** 
+           
+                // calculate amount
+               // this.set('submenuOpened', false);
+               // console.log("sub menu closed");
+               // setup parameters 
+               
+               
+               for(var key in this.orderItems){
+                   console.log(this.orderItems[key]);
+                   if(key === 'splices'){
+                       var obj = this.orderItems[key]
+                       console.log(obj.indexSplices);
+                       console.log(obj.keySplices);
+                   }
+               }
+               //this.params = JSON.stringify(this.parameters);
+              **/ 
+             
+            // this.getSubTotalAmount();
+               
+            },
+            submitOrder: function(event){
+                // prepare parameters
+                var parameters = {};
+                parameters.save = 'true';
+                parameters.name = 'my_restaurant';
+                var obj = {};
+                obj.order_items = this.orderItems;  
+                
+                obj.order_status = "SAVED";
+                obj.server_name = "customer";
+                var dateTime = new Date().getTime();
+                obj.unique_id = dateTime + "";
+                obj.order_time = dateTime;
+                obj.order_type = "online_delivery";
+                obj.discount = "0.00";
+                // id must be in string representation, not direct object
+                parameters.id = JSON.stringify(obj);
+                this.set('parameters', parameters);
+                console.log("sent parameters==>");
+                console.log(parameters);
+                //console.log(this.parameters);
+              //  var request = this.querySelector('iron-ajax');
+                //request.set('content-type', "application/json")
+                //request.set('body', JSON.stringify(this.parameters));
+             //   var response = request.generateRequest();
+                
+                // response from server, display the message
+                console.log("checking if we have the response...")
+                console.log(this.serverResponse);
+                
+                // clear cart order items
+                while(this.orderItems.length > 0)
+                    this.pop('orderItems');
+            },
+            
+            getItemPrice: function(orderItem){
+                console.log(orderItem);
+                
+                var itemPrice = new Number('0.00');
+                              
+                var order_item = orderItem.order_item;
+                var item = order_item.item;                
+                if(item.price)
+                    itemPrice += new Number(item.price);
+                console.log("price =" + itemPrice);
+                
+                if(item.selection){
+                    var sItem = item.selection;
+                    if(sItem.price)
+                        itemPrice += new Number(sItem.price);
+                 console.log("sItem.price=" + sItem.price); 
+                 console.log("itemPrice=" + itemPrice); 
+                    while(sItem.selection){ // has sub-selection
+                        var temp = sItem.selection;
+                        sItem = temp;
+                        if(sItem.price)
+                            itemPrice += new Number(sItem.price);
+                    }
+                }
+                
+                var sub_items = [];
+                if(orderItem.sub_items)
+                    sub_items = orderItem.sub_items;
+                for(var i=0; i<sub_items.length; i++){
+                    if(sub_items[i].price)
+                      itemPrice += new Number(sub_items[i].price);
+                }
+                
+                return itemPrice;                
+            },
+            
+            responseReceived: function(resp, old){
+                console.log("response from server received");
+                console.log(resp)
+            }
+
+          });
+        </script>  
+ </dom-module>

@@ -1,0 +1,180 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/google-map/google-map-marker.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="sis-google-map.html">
+<link rel="import" href="sis-map-overlayview.html"> 
+   
+<dom-module id="sis-location-map">    
+    <style>
+        :host {
+        width:400px;
+        height:500px;
+        margin: 10px;
+        display: block;
+        }
+    </style>
+    <template>
+        <iron-ajax
+             method="POST"
+            url="http://localhost:8080/LocationServlet"
+            params="[[parameters]]" 
+            handle-as="json"  
+            last-response="{{serverResponse}}">                            
+          </iron-ajax>
+        <!-- Note: places library needs to be loaded because we're using google-map-directions
+        which also loads the maps lib with the places library. -->
+        <sis-google-map latitude="[[latitude]]" longitude="[[longitude]]" min-zoom="14" max-zoom="20" language="[[language]]">
+            <google-map-marker latitude="[[latitude]]" longitude="[[longitude]]" title="My Home!" draggable="false">
+                <div>
+                <h2>My restaurant 1</h2>
+                <a target="blank" href="http://www.google.com">
+                <img src="image/home.jpg" /></a>
+                <h4> <a target="blank" href="http://www.google.com">www.google.com</a></h4>
+                </div>
+            </google-map-marker>    
+
+            <sis-map-overlayview latitude="40.7506" longitude="-73.8204">
+                <div>This is my<br><a target="blank" href="http://www.google.com">Restaurent 2</a></div>
+            </sis-map-overlayview>
+            <template is="dom-repeat" items="[[geoLocations]]" as="latLng">
+                <sis-map-overlayview latitude="[[latLng.latitude]]" longitude="[[latLng.longitude]]">
+                    <div>This is my<br><a target="blank" href="http://www.google.com">Restaurent 1</a></div>
+                </sis-map-overlayview>
+            </template>
+            
+            
+        </sis-google-map>
+
+    </template>
+</dom-module>
+<script> 
+
+        
+    Polymer({
+        is: "sis-location-map",
+        properties: {
+            
+            /**
+            * Latitude and longitude to center the map on which is the user's location
+            */
+            latitude: {
+                type: Number,
+                notify: true,
+                observer: 'latChanged'
+            },
+            longitude: {
+                type: Number,
+                notify: true
+            },
+            /**
+             * Parameters contain user info to be sent to server
+             */
+            parameters: {
+                type: Object,
+                notify: true,
+                value: function(){
+                    return {};
+                }
+            },
+            serverResponse: {
+                type: Object,
+                observer: 'responseChanged'
+            },
+            icon: {
+                type: Object
+            },
+            geoLocations: {
+                type: Array,
+                notify:true,
+                value: function(){
+                    return [];
+                }
+            }
+        },
+        observers: [
+          '_initOverlay(latitude, longitude)'
+        ],
+        /**
+         * First function will be called. Get user browser info for user geolocation, starting init process
+         * of template
+         */
+        created: function(){
+            // get user's browser info
+            var geo_options = {
+                enableHighAccuracy: true, 
+                maximumAge        : 30000, 
+                timeout           : 27000
+            };
+            // call navigator to get the current geo position
+            navigator.geolocation.getCurrentPosition(this._Success, this._Error, geo_options);
+            
+            this.icon = {
+                path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
+                fillColor: 'yellow',
+                // path: "M12 2C8.43 2 5.23 3.54 3.01 6L12 22l8.99-16C18.78 3.55 15.57 2 12 2zM7 7c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm5 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z",
+                //fillColor: '#FF0000',
+                fillOpacity: .3,
+                strokeWeight: 1,
+                rotation:45,
+                text: 'TESTING',
+                scale: .1    
+            };
+        },
+        /*
+         * Callback function from user browser, cannot reference any property of this
+         */
+        _Success:function(position) {              
+            // set latitude and longitude from callback, use document to set from outside of Polymer
+            var map = document.querySelector('sis-location-map');
+            map.latitude =  position.coords.latitude;
+            map.longitude =  position.coords.longitude;
+        },
+        
+        _Error:function(err) {
+            console.warn('ERROR(' + err.code + '): ' + err.message);
+        },
+        
+        latChanged: function(){
+            console.log("lat changed to: " + this.latitude);
+        },
+        
+        _updatePosition: function(lat, lng){
+            this.set('latitude' , lat);
+            this.set('longitude', lng);
+        },
+        /**
+         * Call server with user's info to get overlayViews info
+         */
+        _initOverlay: function(latitude, longitude){
+                // prepare parameters
+                this.parameters.latitude = latitude;
+                this.parameters.longitude = longitude;
+                // other user info for the future
+                var obj = {};
+                obj.user_info = {name:"David", title:"manager"};  
+                // send user info as id of the parameter
+                this.parameters.id = JSON.stringify(obj);
+               
+                // prepare request
+                var request = this.querySelector('iron-ajax');
+                // get response
+                var response = request.generateRequest();
+            
+    
+        },
+        responseChanged: function(response, old){
+            console.log("got response");
+            console.log(response);
+            var locs = response.geo_locations;
+            for(var i=0; i<locs.length; i++){
+                this.push('geoLocations', locs[i]);
+                console.log("location lat=" + locs[i].latitude + " lng=" + locs[i].longitude);
+            }
+            console.log(this.geoLocations);
+        }
+            
+                
+    
+    });    
+</script>

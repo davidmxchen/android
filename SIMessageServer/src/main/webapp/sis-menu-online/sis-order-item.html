@@ -1,0 +1,193 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">    
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="sis-menu-subitem.html">
+
+<dom-module id="sis-order-item">
+    <style>
+        :host {    
+            @apply(--layout-horizontal);
+            --paper-item: {            
+                background-color: light grey;
+                color: black;
+                margin: 1px;
+            };          
+        }
+        .dots {
+            background:url('../image/dot_small.gif') repeat-x right;
+        }
+        .left{
+            width:18px;
+            float:left;
+            color:blue;
+            background-color: #EEEEEE;
+        }
+        .itemName{
+            float:left;
+            background-color: #EEEEEE;
+        }
+        .subName{
+            float:left;
+            background-color: #EEFEEE;
+        }
+        .right{
+            width:18px;
+            float:right;
+            color:red;
+            background-color:#EEEEEE;
+        }
+    </style>
+    <template>
+        <paper-item>            
+            <paper-item-body two-line>
+                <div class='dots'><span class='itemName'>[[name]]</span><span>&nbsp;</span><span class='itemPrice'>[[price]]</span></div>
+                <div secondary>
+                    <template is="dom-repeat" items="[[subItems]]" as="subitem">
+                        <div><span>[[subitem.name.en]]</span></div>
+                    </template>
+                </div>
+            </paper-item-body>
+            <div class="right">
+                <iron-icon icon="remove" on-tap="minusPressed"></iron-icon>
+                <iron-icon icon="clear" on-tap="clearPressed"></iron-icon>
+            </div>
+            
+        </paper-item>
+    </template>
+    <script>
+        Polymer({
+            /**
+             * sis-order-item represents an order-item from menu item, used to display orderItem in
+             * sis-order-cart.
+             */
+            is: 'sis-order-item', // this represent single menu item
+            properties: {
+                /**
+                 * the language used for display of the list content of this choice 
+                 */
+                language: {
+                    type: String,
+                    value: 'en',
+                    notify: true
+                },
+                orderItem: {
+                    type: Object,
+                    notify: true
+                },
+                name: {
+                    type: String,
+                    notify: true
+                },
+                price: {
+                    type: Number,
+                    value: 0.00,
+                    notify: true
+                },
+                subItems: {
+                    type: Array,
+                    notify: true,
+                    value: function() {
+                        return [];
+                    }
+                },
+                number: {
+                    type: Number,
+                    notify: true
+                }
+
+            },
+            observers: ['orderItemChanged(orderItem)'],
+            orderItemChanged: function(orderItem) {
+                console.log("show new added order item");
+                console.log(orderItem);
+
+                var order_item = orderItem.order_item;
+                var item = order_item.item;
+
+                var name = item.name[this.language];
+                var itemPrice = new Number('0');
+                console.log("name, price =" + name + ", " + itemPrice);
+                if (item.price)
+                    itemPrice += new Number(item.price);
+                console.log("name, price =" + name + ", " + itemPrice);
+
+                var items = [];
+                items.push(item);
+                if (item.selection) {
+                    var sItem = item.selection;
+                    item.selection = null;
+                    items.push(sItem);
+                    name += '[' + sItem.name[this.language] + ']';
+                    console.log(sItem);
+                    if (sItem.price)
+                        itemPrice += new Number(sItem.price);
+                    console.log("sItem.price=" + sItem.price);
+                    console.log("itemPrice=" + itemPrice);
+                    while (sItem.selection) { // has sub-selection
+                        var temp = sItem.selection;
+                        sItem.selection = null;
+                        sItem = temp;
+                        items.push(sItem);
+                        name += '[' + sItem.name[this.language] + ']';
+                        if (sItem.price)
+                            itemPrice += new Number(sItem.price);
+                        console.log("sItem.price=" + sItem.price);
+                    }
+                }
+                console.log("checking changed items");
+                console.log(items);
+
+                var sub_items = [];
+                if (orderItem.sub_items)
+                    sub_items = orderItem.sub_items;
+                for (var i = 0; i < sub_items.length; i++) {
+                    if (sub_items[i].price)
+                        itemPrice += new Number(sub_items[i].price);
+                    this.push('subItems', sub_items[i]);
+                }
+
+                this.set('price', itemPrice);
+                this.set('name', name);
+                this.set('number', orderItem.number);
+
+                order_item.item = items;
+                orderItem.price = itemPrice.toFixed(2);
+                console.log("new orderItem.price=" + orderItem.price);
+                console.log("show changedorder item");
+                console.log(orderItem);
+                console.log(this.orderItem);
+                // this.set('price', itemPrice);
+                // add a new property to this orderItem
+                // this.set('orderItem.itemPrice', itemPrice);
+
+                /**
+                 console.log("----------")
+                 console.log(this.orderItem);
+                 console.log("------------")
+                 console.log(order_item);
+                 console.log("subitems----");
+                 console.log(this.subItems);
+                 */
+            },
+            addPressed: function(event){
+                console.log(event.detail);
+                var num = this.number+1;
+                console.log("number=" + num);
+           //     this.set('number', num);
+            },
+            minusPressed: function(){
+                console.log("minumPressed");
+                if(this.number>1){
+                    var num = this.number-1;
+                    console.log("Number=" + num);
+                    this.set('number', num);
+                }                    
+            }
+            
+
+        });
+    </script>  
+</dom-module>

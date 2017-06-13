@@ -1,0 +1,64 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="sis-map-overlayview">
+    <style>
+        #overlayContent {
+            left:0px;
+            top:0px;
+            width:50px;
+            height: 100%;
+            position:absolute;
+            color: orange;
+            display:block;
+        }
+    </style>
+    <template >
+        <content id="overlayContent"></content>
+    </template>
+
+<script>
+    Polymer({
+      is: 'sis-map-overlayview',
+      properties: {
+          /**
+            * The overlayview's longitude coordinate.
+            */
+           longitude: {
+             type: Number,
+             reflectToAttribute: true
+           },
+           /**
+            * The overlayview's latitude coordinate.
+            */
+           latitude: {
+             type: Number,
+             reflectToAttribute: true
+           },           
+           /**
+            * Display simple content on map, when this content on mouse over or clicked, change this content
+            * to detail content which provides link to specific webpage
+            */
+           simpleContent: {
+               type: String,
+               notify: true
+           },
+           fullContent: {
+               type:String,
+               notify: true
+           }
+      },
+      
+      
+      applyStyle: function(style){
+          // apply style of this dom to div element in local dom
+         
+          var div = Polymer.dom(this).querySelector('div');
+          div.style.color = 'red';
+          div.style.display = 'block';
+          div.style.backgroundColor = 'yellow';
+          div.style.cursor = 'pointer';
+      }
+      
+    });
+</script>
+</dom-module>

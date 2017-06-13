@@ -1,0 +1,217 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="sis-selector.html">
+<link rel="import" href="sis-multi-selectable.html">
+
+<link rel="import" href="sis-menu-subitem.html">
+
+<link rel="import" href="sis-default-theme.html">
+<link rel="import" href="sis-styles.html">
+
+<dom-module id="sis-menu-selection">
+    <style>
+        :host {    
+            @apply(--layout-horizontal);
+            background-color: white;
+        }
+        paper-button {             
+            background-color: var(--light-primary-color);
+            color: var(--primary-text-color);
+            font-size: 14px;
+            text-transform: capitalize;
+            margin: 5px;
+            @apply(--shadow-elevation-4dp); // apply shadow elevation
+        }
+        paper-button::shadow paper-ripple {
+            color: var(--accent-color);
+        }
+        paper-item {
+            margin: 2px;
+            padding: 3px;
+            @apply(--layout-wrap);
+        }
+
+        .iron-selected {
+            background-color: var(--light-accent-color);
+        }
+        .subitem {
+            @apply(--layout-horizontal);
+            padding: 5px;
+            // border: 1px solid red;
+        }
+    </style>
+    <template>
+        <div> 
+
+            <template is="dom-if" if="{{!hasSubSelection}}">
+                <sis-selector multi max-number="1" checked-items="{{checkedItems}}">
+                    <template is="dom-repeat" items="[[selection]]" as="subitem"> 
+                        <paper-button raised on-tap="singleItemSelected">
+                            <sis-menu-subitem item-index="{{index}}" subitem="[[subitem]]"></sis-menu-subitem>
+                        </paper-button>
+                    </template>
+                </sis-selector>
+            </template>
+
+            <template is="dom-if" if="{{hasSubSelection}}">
+                
+                <template is="dom-repeat" items="[[selection]]"> 
+                    <div class="subitem">
+                        <paper-item>
+                            <span>[[_getName(item)]]</span><span>[[_getPriceString(item)]]</span>
+                        </paper-item>
+                        <paper-item>    
+                            <sis-selector multi max-number="1" checked-items="{{checkedItems}}">
+                                <template is="dom-repeat" items="[[item.selection]]" as="subitem">
+                                    <paper-button raised on-tap="itemSelected" name="[[subitem.name.en]]">
+                                        <sis-menu-subitem parent-item="[[item]]" item-index="{{index}}" subitem="[[subitem]]"></sis-menu-subitem>                          
+                                    </paper-button>
+                                </template>
+                            </sis-selector>
+                        </paper-item>
+                    </div>
+                </template> 
+                
+            </template>
+
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'sis-menu-selection', // this represent single menu item
+            properties: {
+                /**
+                 * the language used for display of the list content of this selection 
+                 */
+                language: {
+                    type: String,
+                    value: 'en',
+                    notify: true
+                },
+                /**
+                 * The array of this selection, initialized from parent
+                 */
+                selection: {
+                    type: Array,
+                    notify: true,
+                    observer: 'selectionChanged'
+                },
+                /**
+                 * The parent item of this selection array, used for reference of this selection.
+                 */
+                parentItem: {
+                    type: Object
+                },
+                /**
+                 * The user selected item in this selection, set when user click the subitem.
+                 * of this selection in the UI
+                 */
+                selectedSubitem: {
+                    type: Array,
+                    notify: true,
+                    reflectedToAttribute: true
+                },
+                /**
+                 * This selection's subitem may also contains selection, it's called subSelection,
+                 * used for display of next level selection, initialized as soon as this selection
+                 * is initialized.
+                 */
+                hasSubSelection: {
+                    type: Boolean,
+                    value: false,
+                    computed: 'checkSubSelection(selection)'
+                },
+                /**
+                 * This slection is a sub-selection of other selection
+                 */
+                isSubSelection: {
+                    type: Boolean,
+                    value: false,
+                    notify: true
+                },
+                checkedItems: {
+                    type: Array,
+                    notify: true,
+                    value: function(){
+                        return [];
+                    }
+                }
+            }, // end of properties
+            observers:['clearSelection(selectedSubitem.length)'],
+            clearSelection: function(length){
+                console.log("clear selection-length=" + length);
+                if(length===0 && this.checkedItems.length>0)
+                    this.set('checkedItems', []);
+            },
+            selectionChanged: function(newSel, oldSel) {
+                this.message = "this item has selections, it has " + newSel.length + " items";
+            },
+            itemSelected: function(e) {
+                var item = e.model.item;
+                var subitem = e.model.subitem;
+
+                // create a new subitem to avoid any reference error
+                var sub_item = {};
+                if (item) {
+                    sub_item.name = item.name;
+                    if (item.price)
+                        sub_item.price = item.price;
+
+                    if (subitem) {
+                        sub_item.selection = subitem;
+                    }
+
+                    this.set('selectedSubitem', sub_item);
+                }
+                
+                // checkedItems can only contain one element, clear all before choose nect
+                this.set('checkedItems', []);                
+                this.push('checkedItems', sub_item);
+
+            //    console.log(this.selectedSubitem);
+            },
+            singleItemSelected: function(e){
+                var subitem = e.model.subitem;
+     //   console.log("subitem==>");
+     //   console.log(subitem);
+                this.set('selectedSubitem', subitem);
+                
+                // checkedItems can only contain one element
+                this.push('checkedItems', subitem);
+                if(this.checkedItems.length > 1)
+                    this.shift('checkedItems');
+                
+            },
+            
+            checkSubSelection: function(selection) {
+                if (selection.length > 1) { // may have passed empty [selection] in
+                    // selection[0] must be not null
+                    if (selection[0].hasOwnProperty('selection'))
+                        return true;
+                    else
+                        return false;
+                } else
+                    return false;
+            },
+            _hasSelection: function(item) {
+                return item.selection;
+            },
+            _getName: function(item) {
+                // item must not be null
+                return item.name[this.language];
+            },
+            _getPriceString: function(item) {
+                // price may be null or empty
+                if (item.price)
+                    return "---$" + item.price;
+                else
+                    return "";
+            }
+        });
+    </script>  
+</dom-module>

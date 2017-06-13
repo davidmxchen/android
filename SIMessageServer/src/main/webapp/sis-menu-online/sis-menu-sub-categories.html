@@ -1,0 +1,87 @@
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+
+    <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+    <link rel="import" href="../bower_components/paper-item/paper-item.html">
+    <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+    <link rel="import" href="../bower_components/paper-menu/paper-submenu.html">
+    
+    <link rel="import" href="sis-default-theme.html">
+    <link rel="import" href="sis-styles.html">
+    
+  <dom-module id="sis-menu-sub-categories">
+      <style>
+          :host {
+              margin-left: 20px;
+              display: block;
+          }
+          paper-item {
+            --paper-item: {
+              cursor: pointer;
+              background-color: var(--primary-background-color);
+              color: var(--primary-text-color);
+              border-radius: 2px;
+              margin:2px;
+            };
+            --paper-item-min-height: 30px;
+          }
+      </style>
+      <template>   
+          <paper-menu selected="{{selectedIndex}}">              
+              <template is="dom-repeat" items="{{categoryNames}}">
+                  <paper-item>[[item]]</paper-item>
+              </template>   
+          </paper-menu>  
+      </template>
+
+        <script>
+          Polymer({
+            is: 'sis-menu-sub-categories',
+            properties: {
+              language: {
+                  type: String,
+                  value: 'en',
+                  notify: true
+              },
+              selectedIndex: {
+                type: Number,
+                observer: '_selectedIndexChanged'
+              },
+              
+              subCategories: {
+                  type: Array,  
+                  notify: true,
+                  observer: '_subCatChanged'
+              },
+              
+              category: {
+                  type: Object,
+                  notify: true,
+                  readyOnly: true,
+                  computed: '_getCategory(selectedIndex, subCategories)'
+              },
+              categoryNames: {
+                  type: Array,
+                  notify: true,
+                  value: function(){
+                      return [];
+                  }
+              }
+            },
+            
+            _subCatChanged: function(newCats, old){
+                for(var i=0; i<newCats.length; i++){
+                    var cat = newCats[i];
+                    this.push('categoryNames', cat.name[this.language]);                    
+                }
+            },
+
+            _getCategory: function(selectedIndex, subCategories){
+                return subCategories[selectedIndex];
+            },
+            
+            _selectedIndexChanged: function(newIndex, oldIndex) {
+                // do sth here if needed
+            }
+          });
+        </script>  
+</dom-module>

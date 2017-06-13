@@ -1,0 +1,462 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-menu/paper-submenu.html">
+
+<link rel="import" href="sis-menu-selection.html">
+<link rel="import" href="sis-menu-choice.html">
+<link rel="import" href="sis-paper-menu.html">
+
+<link rel="import" href="sis-cat-selection.html"
+
+      <link rel="import" href="sis-default-theme.html">
+<link rel="import" href="sis-styles.html">
+
+<dom-module id="sis-menu-item">
+    <style>
+        :host {
+
+        }
+        .menu-trigger {
+            display: block;
+            padding: 6px;
+            margin:2px;
+            font-size: 18px;
+            background-color: silver;  
+        }
+        paper-item {
+            --paper-item: {
+                cursor: pointer;
+            };
+            --paper-item-min-height: 30px;  
+        }
+        .subcontent {
+            margin-left: 10px;
+            padding: 5px;  
+            background-color: light grey;
+        }
+        .sublist {
+            display: block;
+            padding-left: 6px;
+            padding-right: 6px;
+        }
+    </style>
+
+    <template>       
+        <paper-submenu opened="{{submenuOpened}}" on-track="closeAndReset">
+            <div class="menu-trigger">
+                <paper-item>
+                    <iron-icon icon="menu"></iron-icon>
+                    <span>[[name]]</span><span>[[priceString]]</span>
+                </paper-item>
+            </div>
+            <div class="menu-content sublist">
+                <template is="dom-if" if="{{hasDescription}}">
+                    <paper-item>[[description]]</paper-item>
+                </template>
+
+                <template is="dom-if" if="{{hasSelection}}">                    
+                    <div class="subcontent">
+                        <sis-menu-selection parent-item="[[menuItem]]" selected-subitem="{{selectedSubitem}}" selection="{{selection}}"></sis-menu-selection>
+                    </div>
+                    <div class="subcontent">Your Selection:<span> </span>
+                        <span>[[menuItem.name.en]]</span>
+                        <span>[[selectedSubitem.name.en]]</span>
+                        <span>[[selectedSubitem.selection.name.en]]</span>
+                    </div>
+                </template> 
+
+                <template is="dom-if" if="{{hasChoice}}">
+                    <paper-item>
+                        <sis-menu-choice choice-items="[[choiceItems]]" number-of-choice="{{numberOfChoice}}" selected-items="{{selectedChoices}}"></sis-menu-choice>
+                    </paper-item>                    
+
+                    <paper-item>
+                        <paper-item-body two-line>
+                            <div>Your Selection:<span>[[selectedChoices.length]]</span></span></div>
+                            <div secondary>
+                                <template is="dom-repeat" items="[[selectedChoices]]">
+                                    <span>[[item.name.en]]</span><br>
+                                </template>
+                            </div>
+                        </paper-item-body>
+                    </paper-item>
+
+                </template>
+
+                <template is="dom-if" if="{{hasCatSelection}}">
+                    <div class="subcontent" on-tap="_checkSelectedItems">
+                        <sis-cat-selection parent-item="[[menuItem]]" selection="{{catSelection}}" selected-items="{{selectedCatItems}}">
+                    </div>
+
+                    <paper-item>
+                        <paper-item-body two-line>
+                            <div>Your Selection:<span>[[selectedCatItems.length]]</span></span></div>
+                            <div secondary>
+                                <template is="dom-repeat" items="[[displayItems]]" as="subitem">
+                                    <span>[[subitem]]</span><br>
+                                </template>
+                            </div>
+                        </paper-item-body>
+                    </paper-item>
+                </template>
+
+
+                <paper-button raised on-tap="addToCart">Add to Order</paper-button>
+            </div>
+        </paper-submenu>
+    </template>
+    <script>
+        Polymer({
+            is: 'sis-menu-item', // this represent single menu item
+            properties: {
+                /**
+                 * The language used to display this item.
+                 */
+                language: {
+                    type: String,
+                    value: 'en',
+                    notify: true
+                },
+                /**
+                 * The content of this menu item, initialized from category. The menu item contains all data
+                 * of other properties, also contains selection or choice
+                 */
+                menuItem: {
+                    type: Object,
+                    notify: true
+                },
+                /**
+                 * The name of this item
+                 */
+                name: {
+                    type: String,
+                    notify: true,
+                    computed: 'getItemName(menuItem, language)'
+                },
+                /**
+                 * The price property of this item
+                 */
+                price: {
+                    type: String,
+                    notify: true,
+                    computed: 'getPrice(menuItem)'
+                },
+                /**
+                 * The display string for the price of this item
+                 */
+                priceString: {
+                    type: String,
+                    notify: true,
+                    computed: 'getPriceString(menuItem)'
+                },
+                /**
+                 * The description of this item
+                 */
+                description: {
+                    type: String,
+                    notify: true,
+                    computed: 'getDescription(menuItem)'
+                },
+                /**
+                 * The list of subitems for choose of this itemitem, initialized as the item available, 
+                 * if there is no selection for this item, an empty array is assigned to the choice.
+                 */
+                choiceItems: {
+                    type: Array,
+                    notify: true,
+                    computed: 'getChoiceItem(menuItem)'
+                },
+                /**
+                 * The number of choice items allowed to choose from from choice item
+                 */
+                numberOfChoice: {
+                    type: Number,
+                    notify: true,
+                    computed: 'getNumberOfChoice(menuItem)'
+                },
+                /**
+                 * The selection of this item, initialized as the item available, if there is no selection
+                 * for this item, an empty array is assigned to the selection
+                 */
+                selection: {
+                    type: Array,
+                    notify: true,
+                    computed: 'getSelection(menuItem)'
+                },
+                /**
+                 * This is the Category selection for all item within the category, apply to all items.
+                 * The item never change any contents of the category selection
+                 */
+                catSelection: {
+                    type: Array,
+                    notify: true
+                },
+                /**
+                 * check if this item contain selection, initialized as the item is available.
+                 */
+                hasSelection: {
+                    type: Boolean,
+                    value: false,
+                    notify: true,
+                    computed: '_hasSelection(menuItem)'
+                },
+                /**
+                 * Check if the item contains choice for multiple selection of subitems
+                 */
+                hasChoice: {
+                    type: Boolean,
+                    value: false,
+                    notify: true,
+                    computed: '_hasChoice(menuItem)'
+                },
+                /**
+                 * Check if the category of this item has selection
+                 */
+                hasCatSelection: {
+                    type: Boolean,
+                    value: false,
+                    notify: true,
+                    computed: '_hasCatSelection(catSelection)'
+                },
+                /**
+                 * check if this item contain description, initialized as the item is available.
+                 */
+                hasDescription: {
+                    type: Boolean,
+                    valuse: false,
+                    notify: true,
+                    computed: 'checkDescription(menuItem)'
+                },
+                /**
+                 * Watcher for submenu collapse, set to false on new item or item changes
+                 */
+                submenuOpened: {
+                    type: Boolean,
+                    value: false,
+                    notify: true
+                },
+                orderItem: {
+                    type: Object,
+                    value: function() {
+                        return {};
+                    }
+                },
+                selectedCatItems: {
+                    type: Array,
+                    notify: true,
+                    value: function() {
+                        return [];
+                    }
+                }
+            }, // end of properties
+            observers: ['itemChanged(menuItem)'],
+            itemChanged: function(menuItem) {
+                this.set('submenuOpened', false);
+            },
+            getItemName: function(menuItem, language) {
+                return menuItem.name[language];
+            },
+            getPrice: function(menuItem) {
+                if (typeof menuItem.price !== 'undefined')
+                    return menuItem.price;
+                else
+                    return '';
+            },
+            getDescription: function(menuItem) {
+                if (typeof menuItem.description !== 'undefined')
+                    return menuItem.description;
+                else
+                    return '';
+            },
+            getPriceString: function(menuItem) {
+                if (typeof menuItem.price !== 'undefined') {
+                    return '--- $' + menuItem.price;
+                } else
+                    return '';
+            },
+            getSelection: function(menuItem) {
+                if (typeof menuItem.selection !== 'undefined') {
+                    this.message = "This item has selection: " + menuItem.selection.length;
+                    return menuItem.selection;
+                }
+                else {
+                    this.message = "This item has no selection";
+                    return [];
+                }
+            },
+            getChoiceItem: function(menuItem) {
+                if (typeof menuItem.choice !== 'undefined')
+                    return menuItem.choice.item;
+                else
+                    return [];
+            },
+            getNumberOfChoice: function(menuItem) {
+                if (typeof menuItem.choice !== 'undefined')
+                    return menuItem.choice.number;
+                else
+                    return 0;
+            },
+            itemIndexChanged: function(newIndex, oldIndex) {
+            },
+            toggle: function() {
+                this.$.collapse.toggle();
+            },
+            _hasSelection: function(menuItem) {
+                if (menuItem.hasOwnProperty('selection')) {
+                    return true;
+                } else
+                    return false;
+            },
+            _hasChoice: function(menuItem) {
+                if (menuItem.hasOwnProperty('choice')) {
+                    console.log("this item has choice");
+                    return true;
+                }
+                else
+                    return false;
+            },
+            _hasCatSelection: function(catSelection) {
+                if (catSelection && catSelection.length > 0)
+                    return true;
+                else
+                    return false;
+            },
+            checkDescription: function(menuItem) {
+                if (typeof menuItem.description !== 'undefined' && menuItem.description !== '')
+                    return true;
+                else
+                    return false;
+            },
+            addToCart: function(event, detail) {
+                // create new order item with user selected subitem and send to cart
+                var order_item = {};                
+                var item = {};
+                item.name = this.menuItem.name;
+                if (this.menuItem.price)
+                    item.price = this.menuItem.price;
+                if (this.menuItem.description)
+                    item.description = this.menuItem.description;
+                // process sub-selection of the item
+                if (this.hasSelection) {
+                    if (this.selectedSubitem){
+                        item.selection = this.selectedSubitem;
+                    }else // must have selection
+                        return;
+                }
+                order_item.item = item;
+                
+                // process choice part...
+                var sub_items = [];
+                if (this.hasChoice) {
+                    if(this.numberOfChoice !== this.selectedChoices.length)
+                        return;
+                    // order_item.choice = this.selectedChoices;
+                    for(var i=0; i<this.selectedChoices.length; i++){
+                        sub_items.push(this.selectedChoices[i]);
+                    }
+                }
+                // process selection of the category of the item
+                if (this.hasCatSelection) {
+                    if(this.selectedCatItems.length < 1)
+                        return;
+                    // add to sub_items of order_item                     
+                    for (var i = 0; i < this.selectedCatItems.length; i++) {
+                        if (this.selectedCatItems[i].subitem) {
+                           sub_items.push(this.selectedCatItems[i].subitem);
+                        } else {
+                            sub_items.push(this.selectedCatItems[i]);
+                        }
+                    }
+                }
+                
+                var sendItem = {};
+                sendItem.order_item = order_item;
+                sendItem.sub_items = sub_items;
+                sendItem.price = this.price;
+                sendItem.number = 1;
+                sendItem.order_time = "01:47AM";
+                sendItem.sent_time = "";
+                sendItem.item_status = "NEW";
+               
+                this.fire('add-to-cart', {orderItem: sendItem});
+
+
+                // set to new array for the next order
+                if (this.hasChoice)
+                    this.set('selectedChoices', []);
+                if (this.hasSelection)
+                    this.set('selectedSubitem', []);
+                if (this.hasCatSelection) {
+                    this.set('selectedCatItems', []);
+                    this.set('displayItems', []);
+                }
+                //this.set('orderItem', {});
+                this.set('submenuOpened', false);
+
+                /**
+                 // fire 'add-to-cart' event to added selected item to cart
+                 this.orderItem.item = this.menuItem;
+                 if(this.hasSelection){
+                 this.orderItem.selection = this.selectedSubitem;
+                 // clear selection
+                 this.selectedSubitem = {};
+                 }
+                 if(this.hasChoice){
+                 this.orderItem.choice = this.selectedChoices;
+                 // clear choices
+                 this.selectedChoices = [];
+                 }
+                 this.fire('add-to-cart', {orderItem:this.orderItem});
+                 // clear selection and close submenu
+                 this.set('orderItem', {});
+                 this.set('submenuOpened', false);
+                 **/
+            },
+            _getName: function(item) {
+                return item.name[this.language];
+            },
+            _getPriceString: function(item) {
+                if (item.price)
+                    return "---$" + item.price;
+                else
+                    return "";
+            },
+            closeAndReset: function(e) {
+                switch (e.detail.state) {
+                    case 'start':
+                        console.log("track start");
+                        break;
+                    case 'track':
+                        console.log("e.detail.x=" + e.detail.x + " e.detail.y=" + e.detail.y);
+                        console.log("e.detail.dx=" + e.detail.dx + ", e.detail.dy" + e.detail.dy);
+                        if (e.detail.dy < -20) {
+                            console.log("tracking up")
+                            this.set('submenuOpened', false);
+                        }
+                        break;
+                    case 'end':
+                        console.log("tracking end");
+                        break;
+                }
+            },
+            _checkSelectedItems: function(e) {
+                this.displayItems = [];
+                console.log("checking through array");
+                for (var i = 0; i < this.selectedCatItems.length; i++) {
+                    if (this.selectedCatItems[i].subitem) {
+                        console.log("selected item is: " + this.selectedCatItems[i].subitem.name.en);
+                        this.push('displayItems', this.selectedCatItems[i].subitem.name.en);
+                    } else {
+                        console.log("selected item is: " + this.selectedCatItems[i].name.en);
+                        this.push('displayItems', this.selectedCatItems[i].name.en);
+                    }
+                }
+            }
+        });
+    </script>  
+</dom-module>

@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <!--script src="http://localhost:8080/jquery/jquery.min.js"></script-->
+        
+        <meta charset="utf-8">
+        
+        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+          <style>
+            ul { margin-left:20px; color:blue; }
+            li { cursor:default; }
+            tip { font-size:10px; color:green;}
+            span { color:green; display:inline;}
+            div#container { width:700px; }
+            
+            .header {background-color:#FFA500;}
+            .catName {background-color:#FFD700; height:500px; width:200px; float:left;}
+            .menuList {background-color:#EEEEEE;height:500px;width:300px;float:left;overflow:scroll;}
+            .cart {background-color:#eeeaaa;height:500px;width:200px;float:left;}
+            .footer {background-color:#FFA500;clear:both;text-align:center;}
+            
+            .selection {background-color:#eee; width:290px;}
+            .selection > table {width: 100%; text-align: left; cellpadding:0px; cellspacing:0px;}
+            .selected {color: red; cursor: default; }
+            
+            choice { 
+                color:blue; 
+                display:inline; 
+            }
+            selection { 
+                color:blue; 
+                display:inline; 
+            }
+            
+            desc {color:green; font-size:9px; display:none}
+            select1 {color:blue; font-size:10px;}
+            select2 {color:green; font-size:9px;}
+            
+            .tooltip {
+                position: relative;
+            }
+            .tooltip > span {
+                display: none;
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                margin-left: -150px;
+                width: 300px;
+                font-size:9px;
+                color:blue;
+            }
+            .tooltipcart {
+                background-color: #eee;
+                border: 1px solid #555;
+                border-radius: 5px;
+                padding: 5px;
+            }
+            
+            .dots {
+            background:url('image/dot_small.gif') repeat-x right;
+            }
+            .number{
+                width:10px;
+                float:left;
+                background-color: #EEEEEE;
+            }
+            .itemName{
+                float:left;
+                background-color: #EEEEEE;
+            }
+            .subName{
+                float:left;
+                background-color: #EEFEEE;
+            }
+            .itemPrice {
+                float:right;
+                background-color:#EEEEEE;
+            }
+
+            .multipleOrder{
+                float:left;
+                background-color:#99cc00;
+                border:1px solid;
+            }
+            
+            @-webkit-keyframes blinker { from {opacity:1.0;} to {opacity:0.0;} }
+            @keyframes blinker { from {opacity:1.0;} to {opacity:0.0;} }          
+            .highlight{
+                border-style:outset;
+                border:2px solid;
+                text-decoration:blink;
+                -webkit-animation-name:blinker;
+                        animation-name:blinker;  
+                -webkit-animation-iteration-count:infinite;  
+                        animation-iteration-count:infinite;  
+                -webkit-animation-timing-function:cubic-bezier(1.0,0,0,1.0);
+                        animation-timing-function:cubic-bezier(1.0,0,0,1.0);
+                -webkit-animation-duration:1s; 
+                        animation-duration:1s;                
+            }
+            
+
+           </style>
+       
+        <script>
+            // global public json obect
+            var JSONObject;        
+            var CartOrder;
+            var MultipleOrder;
+            var CurrentOrder;
+            // this is the first function call when the page is onload
+            $(function (){
+               $.ajax({
+                dataType: "json",
+                type: "post",
+                url: "http://localhost:8080/SIMessageServer/json_files/MenuList.json",
+                data: {id:"1"},
+                success: function(jsonObject)
+                {     
+                    JSONObject = jsonObject.root;
+                    getCats();
+                }
+              });
+              // initialize all global variable here
+              CartOrder = new Order();
+              MultipleOrder = new Array();
+              CurrentOrder = CartOrder;
+            });
+            
+function test(){
+    return JSONObject;
+}
+            
+            function getSubCatObject(index){
+                var catJson=JSONObject.category;    // [{"name":"soup","item":[{},{},...]},{}...{}]
+                if($.isArray(catJson))
+                    return catJson[index];
+                else
+                    return [];
+            }
+            
+            function getCats(){                
+                var catcart="";
+                var catJson=JSONObject.category;    //[{"name":"soup","item":[{},{},...]},{}...{}]
+                if($.isArray(catJson)){
+                    $.each(catJson, function(index, value){  // value is {"name":"...",xxx}
+                        if($.isPlainObject(value)){
+                            var itemName = value.name.en;
+                            catcart+="<div class='menuCat' id='itemName' onclick='changeCat("+index+")'>"+itemName+"</div>\n";
+                        }
+                    });
+                }
+                // set the item carts of category
+                $(".catName").html(catcart);
+            } 
+                       
+            function changeCat(index){
+                // get the selected menu category name
+                var catName = $(this).html();
+                // get the subcat object
+                var subCatObj = getSubCatObject(index); //{"name":"xxx","description":"xxx","item":[{},{},...{}]}
+                var des = subCatObj.description;    // description of this category
+                var itemList=subCatObj.item;    //this is an array of menu items[{"name":{"full":"xx","abbr":"xx"},},{},{}]
+                var items='';                
+                
+                if(typeof des !== 'undefined'){
+                    items+="<p><cat-desc>"+des+"</cat-desc></P>";
+                }
+                if($.isArray(itemList)){    
+items += '<div class="panel-group" id="accordion">';
+
+                    $.each(itemList, function(i,value){ // value is the menu item in {}
+                        var unicId ="myForm" +index+i;
+                        var anchorId = unicId + "-a";
+                        
+              items += '<div class="panel panel-default" id="' + unicId +'">' +                  
+                    '<div class="panel-heading">' +
+                     ' <h4 class="panel-title menuItem">' +
+                        '<a data-toggle="collapse" data-parent="#accordion" ' +
+                          'href="#' + anchorId + '">';
+                          
+                          if(typeof (value.price) !== 'undefined'){
+                                items+="<div class='dots'><span class='itemName'>"+ value.name.en +"</span>";
+                                items+="&nbsp;<span class='itemPrice'>"+ value.price  +"</span></div>";
+                           }else
+                           items+="<span class='itemName'>"+ value.name.en +"</span>";
+                          
+                         
+              items += '</a></h4></div>';
+                        
+
+              items += '<div id="'+ anchorId + '" class="panel-collapse collapse">'+
+                       '<div class="panel-body">';
+                           
+                        if(typeof (value.description) !== 'undefined'){
+                            items += '<p>' + value.description + '</p>';
+                        }
+                        
+                        var choice = getChoiceHtml(value);
+                        if(choice !== ""){
+                            items += "<choice>" + choice + "</choice>";
+                        }
+                        
+                        var selection = getSelectionHtml(value);
+                        if(selection !== ""){
+                            items+= "<selection>"+selection+"";                
+                            items+="Note: <input type='text' class='note' onchange='addToCart("+ unicId +")' value='Modify this item'>";
+                        }
+                        else
+                            items+="<selection>Note: <input type='text' class='note' onchange='addToCart("+ unicId +")' value='Modify this item'>";
+                
+                        items+="<div class='add' onclick='addToCart("+unicId+")'>Add to Cart</div></selection></div>";
+           
+                        
+             items += '</div></div>';
+             
+          items += '</div>';            
+                        
+                        }); // end of each
+  
+  items += '</div>';                   
+                } // end of if
+                
+                $(".debug").text(items);
+                
+                $(".menuList").html(items);
+                
+              
+                $('.menuItem').hover(
+                    function(){
+                    
+                    $("> selection", this).css("display", "inline");
+                    },
+                    
+                    function() {
+                    $("> selection", this).css("display", "none");
+                });
+                
+
+               $("input").focus(function(){
+                    $(this).css("background-color","#cccccc");
+                });
+                $("input").blur(function(){
+                    $(this).css("background-color","#ffffff");
+                });
+                
+                $(".note").focus(function(){
+                    $(this).val("");
+                });
+                
+          
+
+            }   
+            // get selection from the item object
+            function getSelectionHtml(item){
+                var selectionHtml="";
+                var selection=item.selection;
+                if(typeof selection !== 'undefined'){
+                    // selection must be an array [{},{},{}]
+                    if($.isArray(selection)){   // first selection
+                        selectionHtml+="<div class='selection btn-group' data-toggle='buttons'><table class='itemData'><tr>";
+                        $.each(selection, function(index, value){   //value is {"name":"xx", "price":"xx"} or {"name":"xx","selection":[{},{}]
+                            selectionHtml+="<td><select1><label class='btn btn-primary'><input type='radio' name='select1' value='"+value.name.en+"'";
+                            
+                            if(typeof (value.price) !== 'undefined'){
+                                 selectionHtml+=" price='"+value.price +"'>"+value.name.en+"--$"+value.price+"</label>";
+                            }
+                            else 
+                                selectionHtml+=">"+value.name.en+"</label>";
+                            
+                            selectionHtml+="</select1>";
+                            
+                            // if it has more than one selection    NOTE:hide second selection on css
+                            if(typeof (value.selection) !== 'undefined'){    // loop second layer of selection
+                                var select2=value.selection;
+                                var subHtml="";
+                                if($.isArray(select2)){ // second selection
+                                    $.each(select2, function(i, v){
+                                        if(typeof v.price !== 'undefined'){
+                                            subHtml+="<select2><label class='btn btn-primary'><input type='radio' name='select2' value='"+ v.name.en+"' price='"+v.price+"'>"+v.name.en+"--$"+v.price+"</label></select2>";
+                                        }  else
+                                            subHtml += "<select2><label class='btn btn-primary'><input type='radio' name='select2' value='"+ v.name.en+"'>"+v.name.en+"--$"+v.price+"</label></select2>";
+                                });
+                                }
+                                selectionHtml+=subHtml;                                
+                            }
+                            
+                            selectionHtml+="</td>";
+                        });
+                      selectionHtml+="</tr></table></div>";  
+                    }
+                }
+                
+                return selectionHtml;
+            }
+            
+            function getChoiceHtml(item){
+                var choiceHtml="";
+                var choice=item.choice;// "choice": { "number": "2", "item": [{"name":{"en": "CAL R", "cn": "California Roll"}}, {..}, ..},
+                    
+                if(typeof choice !== 'undefined'){
+                    var number = choice.number;
+                    if($.isArray(choice.item)){   // choice's item name list
+                        choiceHtml+="<div class='choice'><table class='itemData'><tr>";
+                        $.each(choice.item, function(index, value){   //value is {"name":"xx", "price":"xx"} or {"name":"xx","selection":[{},{}]
+                            choiceHtml+="<td><button type='button' name='select1' value='" + value.name.en+ "'>" +value.name.en+ "</button><br>";
+                             
+                            choiceHtml+="</td>";
+                        });
+                      choiceHtml+="</tr></table></div>";  
+                    }
+                }
+                
+                return choiceHtml;
+            }
+            
+            
+            function addToCart(itemId){
+                var name="";
+                var price =0.00;
+                var sel1 = "";
+                var sel2 = "";
+                var note = "";
+                var number = 1;
+                
+                if(  $(itemId).checkSelection()){
+                    name = $(itemId).getName();  
+                    price = $(itemId).getPrice();
+                    var arr = $(itemId).getRadioValue();
+                    if(arr.length === 1){
+                        sel1 = arr[0];
+                    }else if(arr.length === 2){
+                        sel1 = arr[0];
+                        sel2 = arr[1];
+                    }
+                    note = $(itemId).getTextValue();  
+                    
+                    var it = new item(name, price, sel1, sel2, note, number);
+             
+                    CurrentOrder.addItem(it);
+                    
+                    $(".cart").html(cartHtml());     
+                    
+                    $(".cart").append(extraHtml());
+                    
+                    $(itemId).addClass("selected"); //---------------
+                    return true;
+                } else
+                    return false;            
+            }
+
+            function submitOrder(){
+              var dataStr;
+              if(MultipleOrder.length===0)
+                  dataStr=CartOrder.toJson();
+              else
+                  dataStr = multipleOrderJson();
+              
+              $.ajax({
+                    dataType: "json",
+                    type: "post",
+                    url: "http://localhost:8080/OrderProcessServlet",
+                    data: {id: dataStr, save:"true", name:"my_restaurant"},
+                    success: function(jsonObject)
+                    {     
+                        // clear old cart
+                        clearCart();
+                        $(".cart").html("Order has been sent successfully<br>");
+                        
+                        if(typeof jsonObject.order_items !== 'undefined'){
+                            var testOrder = processObject(jsonObject.order_items);
+                            $(".cart").append("Result:");
+                            $(".cart").append(testOrder.html());
+                        }
+                        else if(typeof jsonObject.orders !== 'undefined'){
+                            $(".cart").append("Result:<br/>");
+                            MultipleOrder = processMultiObject(jsonObject.orders);
+                            CartOrder = MultipleOrder[0];
+                            $(".cart").append(multipleOrderHtml());                            
+                        }
+                    }
+               });   
+            }
+            
+            
+            function processMultipleOrder(){
+                
+                var size = MultipleOrder.length;
+                if(size === 0 && CartOrder.order.length > 0){
+                    MultipleOrder[size] = CartOrder;
+                    MultipleOrder[size+1] = new Order();
+                    CurrentOrder = MultipleOrder[size+1];
+                }
+                    
+                else if(size > 0 && MultipleOrder[size-1].order.length > 0){
+                    MultipleOrder[size] = new Order();
+                    CurrentOrder = MultipleOrder[size];
+                }
+                                   
+                var html = multipleOrderHtml();
+                $(".cart").html(html); 
+                $(".cart").append(extraHtml());
+                
+                highlight(MultipleOrder.length-1);
+            }
+            
+            function highlight(index){
+                CurrentOrder = MultipleOrder[index];
+                var num = 'order' + index;
+                $(".orderNumber").each(function(){
+                    if($(this).attr("id") === num){
+                        $(this).addClass("highlight");
+                    } else {
+                        $(this).removeClass("highlight");
+                    }                  
+                });
+            }
+            
+            function cartHtml(){
+                if(MultipleOrder.length === 0)
+                    return CartOrder.html();
+                else
+                    return multipleOrderHtml();
+            }
+        
+            function multipleOrderHtml(){
+                var html = "";
+                var size = MultipleOrder.length;
+                for(var index = 0; index < size; index++){
+                    var title = "<div class='orderNumber' id='order"+index+"' onclick='highlight("+index+")'>Order #"+(index+1)+"</div>";
+                    html += title + MultipleOrder[index].html();
+                }
+                return html;
+            }
+            
+            function multipleOrderJson(){
+                var jsonStr = "{orders:[";
+                var size = MultipleOrder.length;
+                for(var i=0; i<size; i++){
+                    jsonStr += MultipleOrder[i].toJson();
+                    if(i<size-1){
+                        jsonStr+=", ";
+                    }
+                }
+                jsonStr += "]}";
+                
+                return jsonStr;
+            }
+            function extraHtml(){
+                var html = "<p><div><span class='itemName' onclick='resetCart()'>Clear Cart</span><span class='itemPrice' onclick='submitOrder()'>Submit Order</span></div></p>";
+                    html += "<br><p><div><span onclick='processMultipleOrder()'>Add More Orders</span></div></p>";
+                return html;                         
+            }
+            
+            function processMultiObject(multiObj){
+                var objects = new Array();
+                if($.isArray(multiObj)){
+                    $.each(multiObj, function(index, value){
+                        objects[index] = processObject(value.order);
+                    });
+                }
+                return objects;
+            }
+            
+            function processObject(object){ //construct the Order object from Order's json format
+                var orderObj = new Order();
+                if($.isArray(object)){
+                    $.each(object, function(index, value){
+                        orderObj.order[index]= processItemObject(value);
+                    });
+                }
+                return orderObj;
+            }
+            
+            function processItemObject(object) {   // construct the item object from it's json representation
+               var itemObj = new item();
+               if($.isPlainObject(object)){                   
+                    $.each(object, function(key, value){
+                        if(key in itemObj){
+                    /*        if($.isArray(value)){
+                                str+="<li>"+key+":"+processObject(value)+"</li>";
+                            }
+                            else if($.isPlainObject(value))
+                            {
+                                str+="<p><ul>";
+                                $.each(value, function(k,v){
+                                str+="<li>" +k+":"+processObject(v)+"</li>"; 
+                                })
+                                str+="</ul></P>";
+                            } 
+                            else        */                    
+                                itemObj[key]=value;
+                        }
+                    });
+                }
+                return itemObj;
+            };
+            
+            function resetCart(){
+                clearCart();
+                $(".cart").html("Cart has no order");
+            };
+            
+            function clearCart(){
+              CartOrder = new Order();
+              MultipleOrder = new Array();
+              CurrentOrder = CartOrder;
+            };
+            
+            function Order(){
+                this.order = new Array();
+            };
+                       
+            Order.prototype.addItem = function addToOrder(item){
+                var size = this.order.length;
+                this.order[size] = item;
+            };
+            
+            Order.prototype.html = function html(){
+                var html="";
+                var total=0.00;
+                var size = this.order.length;
+                if(size > 0){
+                    for(var i =0; i < size; i++){
+                        html += this.order[i].html();
+                        total += parseFloat(this.order[i].total());
+                    }
+                    html+= "<div class='dots'><span class='itemName'>Total</span>&nbsp;<span class='itemPrice'>"+total.toFixed(2)+"</span></div>";
+               }
+                return html; 
+            };
+ 
+             Order.prototype.total = function getTotal(){
+                var html="";
+                var total=0.00;
+                var size = this.order.length;
+                for(var i =0; i < size; i++){
+                    html += this.order[i].html();
+                    total += parseFloat(this.order[i].total());
+                }
+    
+                return total.toFixed(2);
+            };
+ 
+            Order.prototype.toJson = function toJson(){     // return {"order":[{}, {item json expr;}, ..., {}]}
+                var size = this.order.length;
+                var json = '{"order_items":[';   // oder must be a list of no empty
+                if(size === 0) return "{}";
+                for(var i=0; i<size; i++){
+                    json+=this.order[i].toJson();
+                    if( (i+1) < size) json += ", ";
+                }
+                json +="]}";
+                
+                return json;
+            };
+            
+            /*
+             * representing "order_items" json object
+             * "order_items":[
+             *       {"order_item":{...}, "sub_items":[...], "price":8.95, "sent_time":"", "number":1, "item_status":"NEW"}, 
+             *       {...},
+             *       ..,
+             *       {..}
+             *       ]
+             */
+            function OrderItems(){
+                this.order_items = new Array();                
+            }
+            
+            OrderItem.prototype.addItem = function addOrderItem(item){
+                var size = this.order_items.length;
+                this.order[size] = item;
+            };
+            
+            OrderItem.prototype.toJson = function toJson(){
+                var size = this.order_items.length;
+                if(size === 0) return "{}";
+                var json = '{"order_items":[';                   
+                for(var i=0; i<size; i++){
+                    json+=this.order_items[i].toJson();
+                    if( (i+1) < size) json += ", ";
+                }
+                json +="]}";
+                return json;
+            };
+            
+            /**
+             * {"order_item":{...}, "sub_items":[...], "price":8.95, "sent_time":"", "number":1, "item_status":"NEW"},
+             *  
+             * @param {OrderItem} order_item
+             * @param {SubItems} sub_items
+             * @param {type} price
+             * @param {type} sent_time
+             * @param {type} number
+             * @param {type} item_status
+             * @returns {undefined}
+             */
+            function TableOrderItem(order_item, sub_items, price, sent_time, number, item_status){
+                this.order_item = new OrderItem(order_item);
+                this.sub_items = new SubItems(sub_items);
+                this.price = price;
+                this.sent_time = sent_time;
+                this.number = number;
+                this.item_status = item_status;
+            };
+            
+            TableOrderItem.prototype.toJson = function toJson(){
+                var json = '{';
+                json += this.order_item.toJson() + ', ';
+                json += this.sub_items.toJson() + ', ';
+                json += '"price":' + price + ', ';
+                json += '"sent_time":"' + sent_time +'", ';
+                json += '"number":' + number + ', '; 
+                json += '"item_status":"' + item_status +'"';
+                json += '}';
+                return json;
+            };
+            /**
+             * representing "order_item" json object
+             * {"item":{"price":"8.95","description":"", "name":{...},"printer":{}}},
+             * 
+             * @param {type} order_item
+             * @returns {OrderItem}
+             */
+            function OrderItem(order_item){  
+                this.item = new Item(order_item.item);                
+            };
+            
+            OrderItem.prototype.toJson = function toJson(){
+                var json = '"order_item":{';
+                json += this.item.toJson();
+                json += '}';
+                return json;
+            };
+
+            /**
+             * item as JSONObject:
+             * "item":{"price":"8.95","description":"", "name":{...}}
+             * 
+             * item as JSONArray
+             * {"item":[{"price":"3.95","description":"...",
+                    "name":{"cn":"水饺(6)","en":"Dumpling(6)"},"printer":{}},
+                {"price":"","description":"","name":{"cn":"锅贴","en":"Fried"},"printer":{}}]}
+             * @param {type} item
+             * @returns {Item}
+             */
+            function Item(item){
+                this.item = item;
+            };
+            
+            Item.prototype.toJson = function toJson(){
+                var json = '"item":';
+                if($.isPlainObject(this.item)){
+                    var obj = new subitem(item.name, item.price, item.description);
+                    json += obj.toJson();                    
+                }else if($.isArray(this.item)){
+                    
+                    var size = this.item.length;
+                    json += '[';                    
+                    $.each(this.item, function(index, value){
+                        var object = new subitem(value.name, value.price, value.description);
+                        json += object.toJson();
+                        if(index < size)
+                            json += ', ';  
+                    });   
+                    json += ']';
+                }
+                
+                return json;
+            };
+
+            /*
+             * "sub_items":[
+             *  {"name":{...},"price":"","description":"", "printer":{}},
+             *  {"name":{...},"price":"","description":"", "printer":{}},
+             *  ...
+             *  ]
+             */
+            function SubItems(subitems){
+                this.sub_items = subitems;
+            };
+            
+            SubItems.prototype.addItem = function addSubItem(sub_item){
+                var size = this.sub_items.length;
+                this.order[size] = sub_item;
+            };
+            
+            SubItems.prototype.toJson = function toJson(){
+                var json = '"sub_items":[';
+                if($.isArray(this.sub_items)){                    
+                    var size = this.sub_items.length;
+                    
+                    $.each(this.sub_items, function(index, value){
+                        var object = new subitem(value.name, value.price, value.description);
+                        json += object.toJson();
+                        if(index < size)
+                            json += ', ';   
+                    });  
+                    
+                }else{
+                    json += '{}';
+                }                
+                json += ']';
+                
+                return json;
+            };
+            
+            /*
+             * {"name":{...},"price":"","description":"", "printer":{}}
+             */
+            function subItem(name, price, description){
+                this.name = name;
+                this.price = price;
+                this.description = description;                
+            };
+
+            function item(name, price, select1, select2, note, number){
+                this.name = name;
+                this.price = price;
+                this.selection1 = select1;
+                this.selection2 = select2;
+                this.note = note;
+                this.number = number;    
+           };
+           
+           function preciseRound(num, decimals){
+                return (Math.round(num*Math.pow(10,decimals))/Math.pow(10,decimals)).toFixed(decimals);
+           };
+           
+           item.prototype.total = function getTotal(){
+               var total = preciseRound(parseFloat(this.price) * this.number, 2);
+               return total;
+           };
+           
+           item.prototype.toJson = function toJson(){
+               var json='{"name":"'+this.name+'", "price":"'+this.price+'", "selection1":"'+this.selection1+'", "selection2":"'+this.selection2+'", ';
+               json += '"note":"'+this.note+'", "number":"'+this.number+'"}';
+               return json;
+           };
+           
+            item.prototype.html = function getItemHtml(){
+                var html = "";
+                html +="<div class='selectedChoices'><span class='number'>"+this.number+"</span><span class='itemName'>"+this.name+
+                    "</span>&nbsp;<span class='itemPrice'>"+this.total()+"</span></div>";
+                if(this.selection1.length>0)
+                    html += "<span class='extra'>"+this.selection1+"</span>";
+                if(this.selection2.length>0)
+                    html += "/<span class='extra'>"+this.selection2+"</span>";
+                if(this.note.length>0)
+                    html += "<span class='extra'>"+this.note+"</span>";
+                
+                return html;
+            };
+            
+
+
+            jQuery.fn.getName = function(){
+                var name = $(".itemName", this).html();
+                return name;
+            };
+            
+            jQuery.fn.getPrice = function(){     
+                var price = "";  
+                var tag = $(".itemPrice", this).text();
+                if(typeof ($(".itemPrice", this).text()) !== 'undefined' && tag.length>0){
+                    price = $(".itemPrice", this).text();
+                    return price;
+                }
+               
+                this.find( "input:checked" ).each(function() {
+                    // only have checked selection          
+                    tag=$(this).attr("price");
+                    if(typeof ($(this).attr("price")) !== 'undefined' && tag.length>0)   { 
+                        price = $(this).attr("price");                        
+                    }
+                });            
+               return price;
+            };
+
+            jQuery.fn.getRadioValue = function() {
+
+                var name=new Array();
+                var radios=0;
+                this.find( "input:checked" ).each(function() {
+                     // only have checked selection
+                    name[radios]= $(this).attr("value");                    
+                    radios++;
+                    
+                    $(this).prop('checked', false);
+                }); 
+                return name;
+            };
+
+            jQuery.fn.getTextValue = function(){
+                  var txt="";
+                $(this).find("input:text").each(function (){
+                    var text = $(this).val();  
+                    if(text !== "Modify this item"){
+                        txt += text;
+                      // clear text
+                        $(this).val("Modify this item");  
+                    }
+                });
+                return txt;
+            };
+
+            jQuery.fn.checkSelection = function(){
+                var numChecked=0;
+                var totalSelection =0;
+                var name="";
+                var numberOfName=0;
+                this.find("input:radio").each(function (){  // handle only two names
+                    if(name === ""){
+                        name = $(this).attr("name");
+                        numberOfName++;
+                    }
+                    else if(name !== $(this).attr("name")){
+                        numberOfName++;
+                        name = $(this).attr("name");
+                    }
+                    
+                    totalSelection++;
+                });
+
+                this.find( "input:checked" ).each(function() {
+                    numChecked++;
+                    });
+                    
+                if(numberOfName >= 1 && numChecked < 1) //apply to only one name    
+                {
+                    alert("you must check the item to add to order");
+                    return false;
+                }else if(numberOfName >= 2 && numChecked < 2){
+                    alert("you must check the item to add to order");
+                    return false;
+                }
+                    return true;
+                //if you got here, there is no radio to check
+                return true;
+                
+            };
+
+        </script>
+    </head>
+<body>
+   
+<div id="container">
+
+<div class="header">
+    
+    <div class="body">
+                <div class="logo">
+                    <a id="ctl00_hlLogo" href="">
+                        <img src=''/></a>
+                    
+                </div>
+                <div class="menubar">
+                    <table style='width: 100%; text-align: center;' cellpadding='0px' cellspacing='0px'>
+                        <tr>
+                            <td style="width:100px;">
+                            <ul><li><a href="" title="Fuji Sakura Home Page"><span>Home</span></a></li></ul>
+                        </td><td style="width:100px;">
+                            <ul><li><a href="" title="Fuji Sakura Menu Page" class="selected"><span>Menu</span></a></li></ul>
+                        </td><td style="width:100px;">
+                            <ul><li><a href="" title="Fuji Sakura Location Page"><span>Location</span></a></li></ul>
+                        </td><td style="width:100px;">
+                            <ul><li><a href="" title="Fuji Sakura Photo Gallery"><span>Gallery</span></a></li></ul>
+                        </td><td style="width:100px;">
+                            <ul><li><a href="" title="Account"><span>Account</span></a></li></ul>
+                        </td><td style="width:100px;">
+                            <ul><li><a href="" title="Login"><span>Login</span></a></li></ul>
+                        </td>
+                            
+                        </tr>
+                    </table>
+                </div> 
+    </div>
+</div>
+    
+<div class="catName">
+    
+</div>
+
+
+
+
+<div class="menuList" id="cart">
+
+</div>
+
+<div class="cart">
+    
+    <p>cart cart goes here</P>
+    
+
+</div>
+    <div class="debug">debug here</div>
+   
+<div class="footer">
+Copyright © www.au.com </div>
+
+</div>
+ 
+</body>
+</html>

@@ -1,0 +1,235 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">  
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+
+<link rel="import" href="si-drawer-panel.html">
+<link rel="import" href="sis-menu-categories.html">
+<link rel="import" href="sis-menu-category.html">
+<link rel="import" href="sis-order-cart.html">
+
+<link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+
+<link rel="import" href="sis-default-theme.html">
+<link rel="import" href="sis-styles.html">
+
+
+<dom-module id="sis-menu-builder"> 
+
+    <style> 
+        :host {
+            background-color: light grey;
+        }
+        [drawer] {
+            background: var(--primary-background-color);
+            color: var(--primary-text-color);
+            //background-color: grey;//#B99588;
+            //border-right: 2px solid #ccc;
+            //padding: 5px;
+        }      
+        [main] {
+            background: var(--primary-background-color);
+            color: var(--primary-text-color);
+            // background-color: light grey;
+            // padding: 8px;
+        }      
+        button {
+            width: 160px;
+            height: 40px;
+            font-size: 16px;
+            margin: 6px;
+        }  
+
+
+        paper-drawer-panel {
+            --paper-drawer-panel-main-container: {
+                background-color:  var(--primary-background-color);
+                font-size: 14px;
+            };            
+            --paper-drawer-panel-left-drawer-container: {
+                background-color:  var(--primary-background-color);
+                font-size: 16px;
+            };
+            --paper-drawer-panel-right-drawer-container: {
+                background-color:  var(--primary-background-color);
+                font-size: 12px;
+            };
+        }
+        paper-header-panel {
+            // use waterfall to display full info of a category at show
+        }
+        paper-toolbar {
+            background-color: var(--default-primary-color);//#4285f4;
+            color: var(--text-primary-color); //#fff;
+            padding: 16px 10px 16px 10px;
+            margin: 2px 5px 2px 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        paper-icon-button {
+            --paper-icon-button-ink-color: var(--accent-color);  // white
+            padding: 1px;
+        }
+        .top-left {
+            position: relative;
+            top: 1px;
+            left: 1px;
+        }
+        .top-right {
+            position: relative;
+            top: 1px;
+            right: 1px;
+        }
+    </style>   
+    <template>
+        <si-drawer-panel selected="main" right-drawer drawer-width="260px" responsive-width="620px">              
+
+            <paper-drawer-panel main drawer-width="160px" responsive-width="400px" selected="main">
+                <paper-header-panel drawer mode="waterfall">
+                    <paper-toolbar>
+                        <paper-icon-button icon="menu" on-tap="menuAction"></paper-icon-button>
+                        <div title>Menu Category</div>
+                    </paper-toolbar>   
+                    <div>
+                        <sis-menu-categories language="en" category="{{category}}" categories="{{categories}}"></sis-menu-categories>             
+                    </div>                                           
+                </paper-header-panel>
+
+                <paper-header-panel main mode="waterfall">
+                    <paper-toolbar>
+                        <paper-icon-button icon="menu" paper-drawer-toggle class="top-left"></paper-icon-button>
+                        <div><span>[[category.name.en]]</span></div>
+                        <paper-icon-button icon="menu" si-drawer-toggle class="top-right"></paper-icon-button> 
+                    </paper-toolbar>
+
+                    <div><span>[[category.description]]</span></div>
+                    <div id="myDIV" on-track="handleTrack">
+                    </div>
+                </paper-header-panel>
+            </paper-drawer-panel>
+
+            <paper-header-panel drawer> <!--Right Drawer-->
+                <paper-toolbar>Your Order Cart</paper-toolbar>
+                <div>No Order will be sent if not in business hour</div>
+                <div>
+                    <sis-order-cart language="en" order-items="[[orderItems]]"></sis-order-cart>             
+                </div>
+            </paper-header-panel>    
+
+        </si-drawer-panel>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'sis-menu-builder',
+            properties: {
+                language: {
+                    type: String,
+                    value: 'en',
+                    notify: true
+                },
+                categories: {
+                    type: Array,
+                    observer: '_initCategories'
+                },
+                category: {
+                    type: Object,
+                    notify: true,
+                    observer: '_categoryChanged'  // initialize all properties of the category 
+                },
+                orderItems: {
+                    type: Array,
+                    notify: true,
+                    value: function() {
+                        return [];
+                    }
+                },
+                catElements: {
+                    type: Array,
+                    notify: true,
+                    computed: 'getCatElements(categories)'
+                }
+            },
+            listeners: {
+                'add-to-cart': 'addToCart'
+            },
+            addToCart: function(event) {
+                this.push('orderItems', event.detail.orderItem);
+            },
+            _categoryChanged: function(newCat, oldCat) {
+                // find index of the category
+                var index = this.categories.indexOf(newCat);
+                if (this.catElements[index]) {
+                    document.getElementById("myDIV").appendChild(this.catElements[index]);
+                }
+
+                if (typeof oldCat !== 'undefined') {
+                    var oIndex = this.categories.indexOf(oldCat);
+                    if (oIndex !== -1)
+                        document.getElementById("myDIV").removeChild(this.catElements[oIndex]);
+                }
+            },
+            _initCategories: function(newCat, oldCat) {
+                console.log("_initCategories all " + newCat.length + " sis-menu-category");
+            },
+            /**
+             * Create array of 'sis-menu-category' elements
+             */
+            getCatElements: function(newCat) {
+                var catElements = [];
+                newCat.forEach(function(item, index){
+                    var newEle = document.createElement('sis-menu-category');
+                    newEle._setCategory(item);
+                    newEle._setCatIndex(index);
+                    catElements.push(newEle);
+                });
+                return catElements;
+            },            
+            /**
+             * Handle swap of category. swipe left move to next 'sis-menu-category' element
+             * swipe to right move to previous element
+             */
+            handleTrack: function(e) {
+                var detail = e.detail;
+                var state = e.detail.state;
+                if(state === 'track'){
+                    if(detail.dx < -40){ // move up to 40px
+                        // swipe left, move to the next element
+                        // current element index
+                        var index = this.categories.indexOf(this.category);
+                        if(index<this.categories.length)
+                            this.set('category', this.categories[index+1]);
+                        
+                    }else if(detail.dx > 40){
+                        // swipe right, move to previous element
+                        var index = this.categories.indexOf(this.category);
+                        if(index>0)
+                            this.set('category', this.categories[index-1]);
+                    }
+                }
+                switch (e.detail.state) {
+                    case 'start':
+                        console.log("track start");
+                        break;
+                    case 'track':
+                        console.log("e.detail.x=" + e.detail.x + " e.detail.y=" + e.detail.y);
+                        console.log("e.detail.dx=" + e.detail.dx + ", ddx=" + e.detail.ddx);
+                        if (e.detail.dx < -100) {
+                            console.log("swiped already");
+                           // document.getElementById("myDIV").appendChild(this.catElements[2]);
+                        }
+                        break;
+                    case 'end':
+                        console.log("tracking end");
+                        break;
+                }
+            }
+        });
+    </script>
+
+</dom-module>    

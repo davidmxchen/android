@@ -1,0 +1,229 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="sis-cat-subselection.html">
+<link rel="import" href="sis-selector.html">
+<link rel="import" href="sis-multi-selectable.html">
+
+<link rel="import" href="sis-default-theme.html">
+<link rel="import" href="sis-styles.html">
+
+<dom-module id="sis-cat-selection">
+    <style>
+        :host {    
+            @apply(--layout-vertical);
+            background-color: var(--primary-background-color);
+        }
+        paper-button {             
+            background-color: var(--light-primary-color);
+            color: var(--primary-text-color);
+            font-size: 14px;
+            text-transform: capitalize;
+            margin: 5px;
+            @apply(--shadow-elevation-4dp); // apply shadow elevation
+        }
+        paper-button::shadow paper-ripple {
+            color: var(--accent-color);
+        }
+        paper-item {
+            margin: 2px;
+            padding: 3px;
+            @apply(--layout-wrap);
+        }
+
+        .iron-selected {
+            background-color: var(--light-accent-color);
+        }
+    </style>
+    <template>
+        <template is="dom-if" if="{{singleSelection}}">
+            <div>Choose one item from the list:</div>
+            <div> 
+                <sis-selector multi checked-items="{{selectedItems}}" max-number="1">
+                    <template is="dom-repeat" items="[[selection]]" as="subitem"> 
+                        <paper-button on-tap="itemSelected" toggles>
+                            <span>[[_getName(subitem)]]</span><span>[[_getPriceString(subitem)]]</span>
+                        </paper-button>
+                    </template> 
+                </sis-selector>
+            </div> 
+        </template>
+
+        <template is="dom-if" if="{{doubleSelection}}">
+
+            <template is="dom-repeat" items="[[selection]]" as="subSelection"> 
+                <div>Choose one item from the <span>[[subSelection.name.en]]</span> list:</div>
+                <paper-item on-tap="_itemSelected">
+                    <sis-cat-subselection selection="[[subSelection.selection]]" selected-items="{{selectedItems}}" selected-subitem="{{selectedSubitem}}" parent-item="[[subSelection]]"></sis-cat-subselection>
+                </paper-item>
+            </template>
+
+        </template> 
+
+    </template>
+    <script>
+        Polymer({
+            is: 'sis-cat-selection', // this represent single menu item
+            properties: {
+                /**
+                 * the language used for display of the list content of this choice 
+                 */
+                language: {
+                    type: String,
+                    value: 'en',
+                    notify: true
+                },
+                selection: {
+                    type: Array,
+                    notify: true,
+                    value: function() {
+                        return [];
+                    }
+                },
+                /**
+                 * The parent item of this choice array, used for reference of this choice.
+                 */
+                parentItem: {
+                    type: Object
+                },
+                selectedItems: {
+                    type: Array,
+                    notify: true,
+                    value: function(){
+                        return [];
+                    }
+                },
+                /**
+                 * Value is set only when selection is available
+                 */
+                singleSelection: {
+                    type: Boolean,
+                    value: false,
+                    notify: true,
+                    computed: '_hasSingleSelection(selection)'
+                },
+                /**
+                 * Value is set only when selection is available
+                 */
+                doubleSelection: {
+                    type: Boolean,
+                    value: false,
+                    notify: true,
+                    computed: '_hasDoubleSelection(selection)'
+                },
+                selectedSubitem: {
+                    type: Object,
+                    notify: true,
+                    observer: '_selectedSubitemChanged'
+                }
+            }, // end of properties
+            
+            /*
+            observers:['selectedItemChanged(selectedItems.length)'],
+            selectedItemChanged: function(length){
+                console.log("selectedItems changed size now is==>" + length);
+            },
+            _selectedSubitemChanged: function(nSelect, oSelect) {
+                console.log("_selectedSubitemChanged, new subitem is:");
+                console.log(nSelect);
+            },
+            */
+           
+            /**
+             * Select single item for single cat selection
+             */
+            itemSelected: function(e) {
+                var model = e.model;
+                this.selected = model.subitem;
+                this.push('selectedItems', this.selected);
+                if(this.selectedItems.length > 1)
+                    this.shift('selectedItems');
+                
+               // console.log("selectedItems is: ");
+                //console.log(this.selectedItems);
+            },
+            
+            /**
+             * For multiple category selection, each selection has multiple sub-selection, but only one sub-selection 
+             * is chosen
+             */
+            _itemSelected: function(e) {
+                var model = e.model;
+                var selected = model.subSelection
+                
+                if(this.selectedItems.indexOf(selected) == -1){
+                    this.push('selectedItems', selected);
+                    selected.subitem = this.selectedSubitem;
+                }else{
+                    selected.subitem = this.selectedSubitem;
+                }
+                
+                /**
+                console.log("selected Items is:");
+                console.log(this.selectedItems);
+                console.log(model.subSelection);
+                
+                console.log("debug querySelector==>");
+                var ele = this.querySelector('sis-cat-subselection')._selectedSubitem();
+                console.log(ele);
+                
+                console.log("selection top is==>:");
+                console.log(this.selected);
+                console.log("selected subitem is:==>")
+                console.log(this.selectedSubitem);
+                var index = this.selected.selection.indexOf(this.selectedSubitem);
+                console.log("index of the selectedSubite is: " + index);
+                */
+            },
+            _hasSingleSelection: function(selection) {
+                if (selection.length > 0) {
+                    if (typeof this.selection[0].selection !== 'undefined') {
+               //         console.log("this is double selection");
+                        return false;
+                    } else {
+                 //       console.log("this is a single selection");
+                        return true;
+                    }
+                } else
+                    return false;
+            },
+            _hasDoubleSelection: function(selection) {
+                if (selection.length > 0) {
+                    if (typeof this.selection[0].selection !== 'undefined') {
+                 //       console.log("this is double selection");
+                        return true;
+                    } else {
+                 //       console.log("this is a single selection");
+                        return false;
+                    }
+                } else
+                    return false;
+            },
+            _getName: function(item) {
+                // item must not be null
+                return item.name[this.language];
+            },
+            _getPriceString: function(item) {
+                // price may be null or empty
+                if (item.price && item.price>0.001)
+                    return " +$" + item.price;
+                else
+                    return "";
+            }
+        });
+    </script>  
+</dom-module>
+
+<!--
+<div> 
+                    <iron-selector>
+                        <template is="dom-repeat" items="[[subSelection.selection]]" as="subitem"> 
+                            <paper-button on-tap="itemSelected" toggles>[[subitem.name.en]]</paper-button>
+                        </template> 
+                    </iron-selector>
+                </div> 
+-->

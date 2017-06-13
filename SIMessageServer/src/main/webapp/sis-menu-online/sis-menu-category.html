@@ -1,0 +1,149 @@
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+     
+    <link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+    <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+    <link rel="import" href="../bower_components/paper-menu/paper-menu.html"> 
+    <link rel="import" href="../bower_components/paper-item/paper-item.html">
+    
+    <link rel="import" href="sis-menu-item.html">
+    
+   
+    
+ <dom-module id="sis-menu-category"> 
+     <style>
+         :host{
+              --paper-menu-selected-item: {
+                    background-color: dark grey;
+              };
+              --paper-menu-background-color: {
+                  background-color: light grey;
+              };
+              --paper-menu: {
+                  padding: 5px;
+                  margin-left: 2px;
+                  background-color: white;
+              }
+         }
+     </style>
+     <template>         
+         <paper-menu selected="{{itemIndex}}">              
+              <template is="dom-repeat" items="[[menuItems]]" as="menuItem">
+                  <!--paper-item>[[menuItem.name.en]]</paper-item-->
+                    <sis-menu-item language="{{language}}" menu-item="[[menuItem]]" cat-selection="[[selection]]"></sis-menu-item>
+              </template>   
+         </paper-menu>
+     </template>
+     <script>
+          Polymer({
+            is: 'sis-menu-category',
+            properties: {
+              language: {
+                  type: String,
+                  value: 'en',
+                  notify: true
+              },
+              
+              /**
+               * Category is usually changed from host. This is the first property to be initialized 
+               * for this element, initialize all other properties from the category change.
+               */
+              category: {
+                  type: Object,
+                  notify:true
+              },
+              
+              /**
+               * Index of this Category in Categories.
+               */
+              catIndex: {
+                  type: Number,
+                  value: 0
+              },
+              
+              /**
+               * All menu items of this category
+               * Must compute or recompute on new category or category change
+               */
+              menuItems: {
+                  type: Array,
+                  notify: true,
+                  computed: 'getMenuItems(category)'
+              },
+              
+              /**
+               * Index of the current selected item of this category(selected from UI), reset to the first element
+               * when category changes.
+               */
+              itemIndex: {
+                type: Number,
+                value: 0
+              },
+              
+              /**
+               * Name of the category
+               */
+              name:{
+                  type: Object,
+                  notify:true                  
+              },
+              
+              description:{
+                  type: String,
+                  notify: true
+              },
+              
+              /**
+               * Selection of category for all items in this selection
+               * Must compute or recompute on new category or category change
+               */
+              selection: {
+                  type: Array,
+                  notify: true,
+                  computed: 'getSelection(category)'
+              }
+            }, // end of properties
+            
+            /**
+             * initialize category's selection whenever category changes.
+             */
+            getSelection: function(category){
+                console.log("_getSelection called");
+                if(category.selection)
+                    return category.selection;
+                else
+                    return [];
+            },
+            
+            /**
+             * initialize items of the category whenever category changes
+             */
+            getMenuItems: function(category){
+                console.log("_getMenuItems called");
+                if(category)
+                    return category.item;
+                else
+                    return [];
+            },
+            
+            /**
+             * initialize other properties on category change
+             */
+            categoryChanged: function(newCat, oldCat){
+                if(typeof newCat === 'undefined')
+                    return;
+                this.set('itemIndex', 0); // reset selected item
+                this.set('name', newCat.name);
+                this.set('description', newCat.description);
+            },
+            
+            _setCategory: function(category){
+                this.set('category', category);
+            },
+            
+            _setCatIndex: function(catIndex){
+                this.set('catIndex', catIndex);
+            }
+          });
+        </script>  
+ </dom-module>

@@ -1,0 +1,71 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+
+<dom-module id="sis-menu-server">
+      <template>
+          <iron-ajax
+            auto
+            url="http://localhost:8080/SIMessageServer/POSMenuServlet"
+            params='{"business_id":"abcde_12345", "mime_type":"json", "geo":"37.4564, 45.2316"}'
+            handle-as="json"
+            last-response="{{serverResponse}}">                            
+          </iron-ajax>
+          <!--div>debug:
+              <span>[[serverResponse.root.empty_item.name.en]]</span>
+              <span>[[message1]]</span>
+              <span>[[message2]]</span>
+          </div-->
+      </template>
+    
+      <script>
+          Polymer({
+              is: 'sis-menu-server',
+              properties: {
+                  language: {
+                      type: String,
+                      value: 'en',
+                      notify: true
+                  },
+                  serverResponse: {
+                      type: Object,
+                      notify:true, // notify for two way binding, cannot use with readOnly
+                      observer: 'responseChanged' 
+                  },
+                  menuCategories:{
+                      type: Array,
+                      notify:true,
+                      readOnly: true,
+                      computed : 'getCategories(serverResponse)'
+                  },                  
+                  categoryNames: {
+                      type: Array,
+                      notify: true,
+                      computed: 'getCatNames(serverResponse, language)'  // always use with read only
+                  }
+              },
+              
+              /**
+               * function for debug only, remove later
+               */
+              responseChanged: function(newValue, oldValue){                  
+                  this.message1 = "Msg1: The response has " + newValue.category.length + " categories"; 
+                 // menuCategories = newValue.root.category;
+              },
+              
+              getCategories: function(serverResponse){
+                  return serverResponse.category;
+              },
+              
+              getCatNames: function(serverResponse, language){
+                  var menuCats = serverResponse.category;
+                  var names = new Array(menuCats.length);
+                  for(var i=0; i<menuCats.length; i++){
+                      names[i] = menuCats[i].name[language];                      
+                  }
+                  this.message2 = "Msg2: responseChange called: " + names[1] + " cats";
+                  return names;
+              }
+          });
+      </script>
+  </dom-module>

@@ -1,0 +1,126 @@
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+
+    <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+    <link rel="import" href="../bower_components/paper-menu/paper-submenu.html">
+    <link rel="import" href="../bower_components/paper-item/paper-item.html">
+    <link rel="import" href="sis-menu-server.html">
+    <link rel="import" href="sis-menu-sub-categories.html">
+    
+    <link rel="import" href="sis-default-theme.html">
+    <link rel="import" href="sis-styles.html">        
+    
+  <dom-module id="sis-menu-categories">
+      <style>
+          paper-item {
+            --paper-item: {
+              cursor: pointer;
+              background-color: var(--accent-color);
+              color: var(--dark-theme-text-color);
+              margin: 1px;
+            };
+            --paper-item-min-height: 40px;
+          }          
+      </style>
+      <template>          
+          <sis-menu-server menu-categories="{{categories}}" language="{{language}}"></sis-menu-server>
+          
+          <paper-menu selected="{{selectedIndex}}">              
+              <template is="dom-repeat" items="[[categories]]" as="cat">                  
+                  <template is="dom-if" if="{{_hasSubCat(cat)}}">
+                    <paper-submenu>
+                        <paper-item class="menu-trigger">[[cat.name.en]]</paper-item>
+                        <sis-menu-sub-categories sub-categories="[[cat.group_category]]" category="{{category}}" language="[[language]]" class="menu-content sublist"></sis-menu-sub-categories>
+                    </paper-submenu>                   
+                  </template>
+                  
+                  <template is="dom-if" if="{{!_hasSubCat(cat)}}">
+                    <paper-item>[[_getName(cat)]]</paper-item>
+                  </template>
+              </template>   
+          </paper-menu>
+      </template>
+
+        <script>
+          Polymer({
+            is: 'sis-menu-categories',
+            properties: {
+              language: {
+                  type: String,
+                  value: 'en',
+                  notify: true,
+                  observer: 'languageChanged'
+              },
+              selectedIndex: {
+                type: Number,
+                value: 0,
+                notify: true,
+                observer: 'selectedIndexChanged'
+              },
+              
+              categories: {
+                  type: Array,  
+                  notify: true
+              },
+              /**
+               * This is the user selected category, used by sis-menu-item to display items on main
+               * change on selected index change, also be changed on sub-category to reflect sub-category
+               * items in main.
+               * Set to the first category of Categories, and reset when selected index change
+               */
+              category: {
+                  type: Object,
+                  notify: true
+              }              
+            },
+            observers:['initCat(categories)'], // observer the initialization of the category
+            
+            initCat: function(categories){
+                // set the category to be the selected index category, the first category by default
+                this.set('category', categories[this.selectedIndex]);
+            },
+            
+            languageChanged: function(nLang, oLang){
+                // when categories is not set, do nothing on language
+                if(!this.categories)
+                    return;
+                
+                // re-populate the 'dom-repeat' by reseting the categories by this stupid way
+                var temp = [];
+                while(this.categories.length > 0)
+                    temp.push(this.pop('categories'));
+                // put back
+                
+                while(temp.length > 0)
+                    this.push('categories', temp.pop());
+            },
+            selectedIndexChanged: function(newIndex, oldIndex) {    
+                // set only when categories is available
+                if(this.categories)
+                    this.set('category', this.categories[newIndex]);
+            },
+            
+            _hasSubCat: function(cat){
+                return cat.group_category?true:false;
+            },
+            _getName: function(cat){
+                return cat.name[this.language];
+            },
+            
+            /**
+             * Provide a way to set the selectedIndex from outside through element
+             * return true if set successfully, flase if the the index is out of bound.
+             */
+            _setSelectedIndex: function(index){
+                if(index >= 0 && index<this.categories.length){
+                    this.set('selectedIndex', index);
+                    return true;
+                }else
+                    return false;                     
+            },
+            _getSelectedIndex: function(){
+                return this.selectedIndex;
+            }
+
+          });
+        </script>  
+</dom-module>

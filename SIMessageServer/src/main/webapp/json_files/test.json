@@ -1,0 +1,28 @@
+{"total":9.69,
+    "customer_info":{"extension":"","cell_phone":"","phone":"","address":{"zip":"","street":"","state":"","city":""},
+        "card_info":{"card_type":"","card_number":"","expiration_date":"","security_code":"","card_name":""},
+        "name":"","note":""},"discount_info":{"amount":0,"percent":0,"charge_type":"AMOUNT","name":""},
+    "sub_total":8.95,"order_id":{"prefix":"","number":2,"suffix":""},"order_status":"NEW","discount":0,"order_time":1432066304831,
+    "table_name":"A2","tax_amount":0.74,
+    
+    "order_items":[
+        {"order_item":{"item":{"price":"8.95","description":"",
+                    "name":{"cn":"Two Rolls Combo","en":"2R COMBO"},"printer":{}}},
+            
+            "sub_items":[
+                {"price":"","description":"", "name":{"cn":"Salmon Roll","en":"SAL R"},"printer":{}},
+                {"price":"","description":"", "name":{"cn":"Tuna Avocado Roll","en":"TUNA AVO R"},"printer":{}}],
+            
+            "price":8.95,"sent_time":"","number":1,"item_status":"NEW"},
+        
+        {"order_item":{"item":[{"price":"3.95","description":"...",
+                    "name":{"cn":"水饺(6)","en":"Dumpling(6)"},"printer":{}},
+                {"price":"","description":"","name":{"cn":"锅贴","en":"Fried"},"printer":{}}]},
+            "price":3.95,"sent_time":"","number":1,"item_status":"NEW"}
+        ],
+        
+    "paid_amount":0,"payment_type":"DUE","order_type":"DINE_IN","tax_rate":8.28,"tip_amount":0,
+    "other_charge":{"amount":0,"percent":0,"charge_type":"AMOUNT","name":""}
+    
+    }
+

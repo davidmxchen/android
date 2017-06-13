@@ -1,0 +1,155 @@
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+ 
+    <link rel="import" href="../bower_components/paper-item/paper-item.html">
+ 
+    <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+    <link rel="import" href="../bower_components/paper-button/paper-button.html">
+    <link rel="import" href="sis-menu-subitem.html">
+    
+ <dom-module id="sis-menu-selection">
+     <style>
+        :host {    
+            @apply(--layout-horizontal);
+            background-color: green;
+            --paper-button: {             
+                  background-color: light grey;
+                  color: black;
+                  font-size: 14px;
+                  border: 1px solid black;
+            };
+            --paper-item: {
+                margin: 2px;
+                padding: 3px;
+                @apply(--layout-wrap);
+            }
+        }
+        .subitem {
+            @apply(--layout-horizontal);
+            padding: 5px;
+            border: 1px solid red;
+        }
+     </style>
+     <template>
+          <div> 
+              <template is="dom-repeat" items="[[selection]]"> 
+                  <template is="dom-if" if="{{!_hasSelection(item)}}">
+                      <paper-button raised on-click="itemSelected">
+                          <sis-menu-subitem item-index="{{index}}" subitem="[[item]]"></sis-menu-subitem>
+                      </paper-button>
+                  </template>
+                  
+                  <template is="dom-if" if="{{_hasSelection(item)}}">
+                      <div class="subitem">
+                          <paper-item>
+                              <span>[[_getName(item)]]</span><span>[[_getPriceString(item)]]</span>
+                          </paper-item>
+                          <paper-item>                              
+                              <template is="dom-repeat" items="[[item.selection]]" as="subitem">
+                                  <paper-button raised on-click="itemSelected">
+                                      <sis-menu-subitem parent-item="[[item]]" item-index="{{index}}" subitem="[[subitem]]"></sis-menu-subitem>                          
+                                  </paper-button>
+                              </template>
+                          </paper-item>
+                      </div>
+                  </template>
+              </template> 
+          </div>
+     </template>
+     <script>
+          Polymer({              
+            is: 'sis-menu-selection', // this represent single menu item
+            properties: {
+              /**
+               * the language used for display of the list content of this selection 
+               */
+              language: {
+                  type: String,
+                  value: 'en',
+                  notify: true
+              },
+              /**
+               * The array of this selection, initialized from parent
+               */
+              selection: {
+                  type: Array,
+                  notify: true,
+                  observer: 'selectionChanged'
+              },
+              /**
+               * The parent item of this selection array, used for reference of this selection.
+               */
+              parentItem: {
+                  type: Object
+              },
+              /**
+               * The user selected item in this selection, set when user click the subitem.
+               * of this selection in the UI
+               */
+              selectedSubitem: {
+                  type: Object,                  
+                  notify: true,
+                  reflectedToAttribute: true
+              },
+              /**
+               * This selection's subitem may also contains selection, it's called subSelection,
+               * used for display of next level selection, initialized as soon as this selection
+               * is initialized.
+               */
+              hasSubSelection: {
+                  type: Boolean,
+                  value: false,
+                  computed: 'checkSubSelection(selection)'
+              },
+              /**
+               * This slection is a sub-selection of other selection
+               */
+              isSubSelection: {
+                  type: Boolean,
+                  value: false,
+                  notify: true
+              }
+          }, // end of properties
+          selectionChanged: function(newSel, oldSel){
+              this.message = "this item has selections, it has " + newSel.length + " items";
+          },
+          itemSelected: function(e) {
+              var item = e.model.item;
+              var subitem = e.model.subitem;
+              console.log(item);
+              console.log(subitem);
+              if(item)
+                  this.set('selectedSubitem', item);
+              
+              if(subitem){
+                  this.set('selectedSubitem.selection', subitem);
+              }             
+   
+             console.log(this.selectedSubitem);               
+          },
+          checkSubSelection: function(selection){
+              if(selection.length > 1){ // may have passed empty [selection] in
+                  // selection[0] must be not null
+                  if(selection[0].hasOwnProperty('selection'))
+                      return true;
+                  else
+                      return false;
+              }else
+                  return false;
+          },
+          _hasSelection: function(item){
+              return item.selection;
+          },
+          _getName: function(item){ 
+              // item must not be null
+              return item.name[this.language];            
+          },
+          _getPriceString: function(item){
+              // price may be null or empty
+              if(item.price)
+                  return "---$" + item.price;
+              else
+                  return "";
+          }
+      });
+        </script>  
+ </dom-module>

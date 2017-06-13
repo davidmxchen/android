@@ -1,0 +1,166 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+
+
+This implementation derived from iron-multi-selectable.html
+
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selectable.html">
+
+<script>
+    /** @polymerBehavior Polymer.IronMultiSelectableBehavior */
+    Polymer.SisMultiSelectableBehaviorImpl = {
+        properties: {
+            /**
+             * If true, multiple selections are allowed.
+             */
+            multi: {
+                type: Boolean,
+                value: false,
+                observer: 'multiChanged'
+            },
+            /**
+             * Max number of selection, including the same items
+             */
+            maxNumber: {
+                type: Number,
+                notify: true
+            },
+            /**
+             * Gets or sets the selected elements. This is used instead of `selected` when `multi`
+             * is true.
+             */
+            selectedValues: {
+                type: Array,
+                notify: true
+            },
+            /**
+             * Returns an array of currently selected items.
+             * used by IronSelectable, don't touch this
+             */
+            selectedItems: {
+                type: Array,
+                readOnly: true,
+                notify: true
+            },
+            
+            /**
+             * Keep a reference of the selected Items. The selected items should be in consistant with
+             * theselectedValues(index of the selected items Array). when the all the selected items are cleared
+             * for new selection(s), all selection of item should be cleared.
+             * @type Array
+             */
+            checkedItems: {
+                type: Array,
+                notify: true
+            }
+
+        },
+        observers: [
+            '_updateSelected(attrForSelected, selectedValues)',
+            '_checkedItemsChanged(checkedItems.length)'
+        ],
+        
+        /**
+         * when the all the selected items are cleared for new selections, all selection of item should be cleared.
+         * @param {type} length
+         * @returns {undefined}
+         */
+        _checkedItemsChanged: function(length) {
+            console.log("_checkedItems changed==>" + length);
+            console.log("selectedValue is:");
+            console.log(this.selectedValues);
+            if (this.selectedValues) {
+                var sLength = this.selectedValues.length;
+                if (length < 1 && sLength > 0) {
+                    for (var i = 0; i < sLength; i++) {
+                        var val = this.shift('selectedValues');// remove the first one
+                        this._selection.setItemSelected(this._valueToItem(val), false);
+                    }
+                }
+            }
+        },
+        
+        /**
+         * Selects the given value. If the `multi` property is true, then the selected state of the
+         * `value` will be toggled; otherwise the `value` will be selected.
+         *
+         * @method select
+         * @param {string} value the value to select.
+         */
+        select: function(value) {
+            if (this.multi) {
+                if (this.selectedValues) {
+                    this._toggleSelected(value);
+                } else {
+                    this.selectedValues = [value];
+                }
+            } else {
+                this.selected = value;
+            }
+        },
+        multiChanged: function(multi) {
+            this._selection.multi = multi;
+        },
+        _updateSelected: function() {
+            if (this.multi) {
+                this._selectMulti(this.selectedValues);
+            } else {
+                this._selectSelected(this.selected);
+            }
+        },
+        _selectMulti: function(values) {
+            this._selection.clear();
+            if (values) {
+                for (var i = 0; i < values.length; i++) {
+                    this._selection.setItemSelected(this._valueToItem(values[i]), true);
+                }
+            }
+        },
+        _selectionChange: function() {
+            var s = this._selection.get();
+            if (this.multi) {
+                this._setSelectedItems(s);
+            } else {
+                this._setSelectedItems([s]);
+                this._setSelectedItem(s);
+            }
+        },
+        /**
+         * This function apply to multiple selection only
+         * @param {type} value. Value is the index of the selected item in sis-selector list
+         * @returns {undefined}
+         */
+        _toggleSelected: function(value) {
+            // value is the index of the last selected item, the selectedValues is an Array of the 
+            // selected item index for multiple selection
+            // push item's index
+            this.selectedValues.push(value);
+
+            if (this.selectedValues.length > this.maxNumber) {
+                var val = this.shift('selectedValues');// remove the first one
+                this._selection.setItemSelected(this._valueToItem(val), false);
+                for (var i = 0; i < this.selectedValues.length; i++) {
+                    var index = this.selectedValues[i];
+                    this._selection.setItemSelected(this._valueToItem(index), true);
+                }
+            }
+            this._selection.setItemSelected(this._valueToItem(value), true);
+        }
+    };
+
+    /** @polymerBehavior */
+    Polymer.SisMultiSelectableBehavior = [
+        Polymer.IronSelectableBehavior,
+        Polymer.SisMultiSelectableBehaviorImpl
+    ];
+
+</script>

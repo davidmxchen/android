@@ -1,0 +1,133 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="sis-selector.html">
+<link rel="import" href="sis-multi-selectable.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<!--link rel="import" href="sis-menu-subitem.html"-->
+
+<link rel="import" href="sis-default-theme.html">
+<link rel="import" href="sis-styles.html">
+
+<dom-module id="sis-menu-choice">
+    <style>
+        :host {    
+            @apply(--layout-vertical);
+            background-color: var(--primary-background-color);
+        }
+        paper-button {             
+            background-color: var(--light-primary-color);
+            color: var(--primary-text-color);
+            font-size: 14px;
+            text-transform: capitalize;
+            margin: 5px;
+            @apply(--shadow-elevation-4dp); // apply shadow elevation
+        }
+        paper-button::shadow paper-ripple {
+            color: var(--accent-color);
+        }
+        paper-item {
+            margin: 2px;
+            padding: 3px;
+            @apply(--layout-wrap);
+        }
+
+        .iron-selected {
+            background-color: var(--light-accent-color);
+        }
+    </style>
+    <template>
+        <div>Choose <b>[[numberOfChoice]]</b> items from the list:</div>
+        <div> 
+            <sis-selector multi max-number="[[numberOfChoice]]" checked-items="{{selectedItems}}">
+                <template is="dom-repeat" items="[[choiceItems]]" as="subitem"> 
+                    <paper-button on-tap="itemSelected" toggles>[[subitem.name.en]]</paper-button>
+                </template> 
+            </sis-selector>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'sis-menu-choice', // this represent single menu item
+            properties: {
+                /**
+                 * the language used for display of the list content of this choice 
+                 */
+                language: {
+                    type: String,
+                    value: 'en',
+                    notify: true
+                },
+                
+                numberOfChoice: {
+                    type: Number,
+                    notify: true
+                },
+                
+                /**
+                 * The array item/subitem of this choice, initialized from parent, choice represent a list of menu items or
+                 * sub-items for user to choose from, user need to choose a certain number of items from the 
+                 * choice list, the same item can be choosen more than once.
+                 */
+                choiceItems: {
+                    type: Array,
+                    notify: true
+                },
+                
+                /**
+                 * The parent item of this choice array, used for reference of this choice.
+                 */
+                parentItem: {
+                    type: Object
+                },
+                
+                /**
+                 * The user selected item in this choice, set when user click the subitem.
+                 * of this choice in the UI
+                 */
+                selectedChoice: {
+                    type: Array,
+                    notify: true,
+                    value: function() {
+                        return [];
+                    }
+                },
+                
+                selectedItems: {
+                    type: Array,
+                    notify: true,
+                    value: function() {
+                        return [];
+                    }
+                }
+            }, // end of properties
+            
+            observers: ['addSelectedItem(selectedChoice.length)'],
+            
+            // watch for length change for debug only
+            addSelectedItem: function(length) {
+               // console.log("selectedChoice changed, size of selected items is:" + length);
+               // console.log(this.selectedChoice);
+            },            
+            
+            itemSelected: function(e) {
+                var model = e.model;
+                this.selected = model.subitem;
+                
+                this.push('selectedItems', this.selected);
+                if (this.selectedItems.length > this.numberOfChoice){
+                    var obj = this.shift('selectedItems');
+                    console.log("checking shifted object");
+                    console.log(obj);
+                }
+                console.log("selectedItems length is: " + this.selectedItems.length);
+                //for(var index in this.selectedItems){
+                //   console.log(index + ": " + this.selectedItems[index].name.en );
+                // }    
+                // console.log("selected item: " + this.selectedItems[0].name.en);
+
+            }
+        });
+    </script>  
+</dom-module>

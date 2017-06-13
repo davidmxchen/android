@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="websocket/sis-websocket-element.html">
+  </head>
+  <body>
+    <h2>Testing of websocket</h2>
+  
+    <div id="message"></div> 
+    <sis-websocket-element websocket-url="ws://localhost:8080/SIMessageServer/pos_message_server_endpoint"></sis-websocket-element>
+    <script>
+        var div = document.getElementById("message");
+        var wsElement = document.querySelector("sis-websocket-element");
+        wsElement.addEventListener('onerror', function (error){
+            throw new Error(error);
+        });
+        wsElement.addEventListener('onopen', function () {
+            console.log("socket onOpen");
+            wsElement.send("{\"protocol_type\":\"auth\",\"credential\":{\"business_id\":\"abcde_12345\"}}");
+            console.log("auth request sent on open");
+        });
+        wsElement.addEventListener('onmessage', function (message) {
+            // hello from the server
+            console.log("mesage received");
+            console.log(message.detail);
+            div.innerHTML += message.detail + "<br>";
+        });
+    </script>
+  </body>
+  
+</html>

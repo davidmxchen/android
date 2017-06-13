@@ -1,0 +1,124 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="sis-selector.html">
+<link rel="import" href="sis-multi-selectable.html">
+
+<link rel="import" href="sis-default-theme.html">
+<link rel="import" href="sis-styles.html">
+
+<dom-module id="sis-cat-subselection">
+    <style>
+        :host {    
+            @apply(--layout-horizontal);
+            background-color: var(--primary-background-color);
+        }
+        paper-button {             
+            background-color: var(--light-primary-color);
+            color: var(--primary-text-color);
+            font-size: 14px;
+            text-transform: capitalize;
+            margin: 5px;
+            @apply(--shadow-elevation-4dp); // apply shadow elevation
+        }
+        paper-button::shadow paper-ripple {
+            color: var(--accent-color);
+        }
+        paper-item {
+            margin: 2px;
+            padding: 3px;
+            @apply(--layout-wrap);
+        }
+
+        .iron-selected {
+            background-color: var(--light-accent-color);
+        }
+    </style>
+    <template>
+        <sis-selector multi checked-items="{{checkedItems}}" max-number="1">
+            <template is="dom-repeat" items="[[selection]]" as="subitem"> 
+                <paper-button on-tap="itemSelected" toggles>
+                    <span>[[_getName(subitem)]]</span><span>[[_getPriceString(subitem)]]</span>
+                </paper-button>
+            </template> 
+        </sis-selector>
+    </template>
+    <script>
+        Polymer({
+            is: 'sis-cat-subselection', // this represent single menu item
+            properties: {
+                /**
+                 * the language used for display of the list content of this choice 
+                 */
+                language: {
+                    type: String,
+                    value: 'en',
+                    notify: true
+                },
+                selection: {
+                    type: Array,
+                    notify: true,
+                    value: function() {
+                        return [];
+                    }
+                },
+                /**
+                 * The parent item of this choice array, used for reference of this choice.
+                 */
+                parentItem: {
+                    type: Object
+                },
+                selectedSubitem: {
+                    type: Object,
+                    notify: true
+                },
+                /**
+                 * Passed from parent which is top layer of cat-selection, when parent reset this selectedItem 
+                 * sis-selector should clear its selection
+                 */
+                selectedItems: {
+                    type: Array,
+                    notify: true
+                },
+                checkedItems: {
+                    type: Array,
+                    notify: true,
+                    value: function() {
+                        return [];
+                    }
+                }
+            }, // end of properties
+            observers: ['clearSelection(selectedItems.length)'],
+            clearSelection: function(length) {
+                if (length == 0 && this.checkedItems.length > 0)
+                    this.set('checkedItems', []);
+            },
+            itemSelected: function(e) {
+                var model = e.model;
+                this.selected = model.subitem;
+                // this one for selection
+                this.set('selectedSubitem', this.selected);
+                // this one for cleaning purpose
+                this.push('checkedItems', this.selected);
+                if (this.checkedItems.length > 1)
+                    this.shift('selectedItems');
+            },
+            _selectedSubitem: function() {
+                return this.selectedSubitem;
+            },
+            _getName: function(item) {
+                // item must not be null
+                return item.name[this.language];
+            },
+            _getPriceString: function(item) {
+                // price may be null or empty
+                if (item.price && item.price > 0.001)
+                    return " +$" + item.price;
+                else
+                    return "";
+            }
+        });
+    </script>  
+</dom-module>
